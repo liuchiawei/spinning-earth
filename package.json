@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nauverse/tailwind-dot-grid-backgrounds": "^1.2.13",
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.7",
     "@react-three/drei": "^9.121.3",

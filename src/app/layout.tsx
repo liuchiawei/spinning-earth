@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Roboto, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme_provider";
+import ThemeToggle from "@/components/theme_toggle";
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
@@ -26,11 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body
-        className={`${roboto.variable} ${notoSansJP.variable} antialiased h-screen w-full absolute pointer-events-none`}
-      >
+      <body className={`${roboto.variable} ${notoSansJP.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          <ThemeToggle />
+          <div className="bg-dot-32-s-1-foreground/50 h-screen w-full absolute pointer-events-none z-0">
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>
