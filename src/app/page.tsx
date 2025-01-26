@@ -1,101 +1,112 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import * as THREE from "three";
+import { useRef, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Image, ScrollControls, useScroll } from "@react-three/drei";
+import { easing } from "maath";
+import "./util";
+
+export default function App() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <Canvas camera={{ position: [0, 0, 100], fov: 100 }}>
+      <fog attach="fog" args={["#a53", 8.5, 12]} />
+      {/* pages 控制捲動速度，數量越少越快捲完一圈 */}
+      <ScrollControls pages={2} infinite>
+        {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
+        <Rig rotation={[0.2, 0, 0.15]}>
+          <Carousel radius={2} count={8} />
+        </Rig>
+      </ScrollControls>
+    </Canvas>
+  );
+}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+function Rig(props: { children: React.ReactNode; rotation: number[] }) {
+  const ref = useRef<THREE.Group>(null);
+  const scroll = useScroll();
+  useFrame((state, delta) => {
+    if (!ref.current) return;
+    // y軸隨時間和捲動旋轉
+    const t = state.clock.getElapsedTime();
+    ref.current.rotation.y = -t / 12 - scroll.offset * (Math.PI * 2); // Rotate contents
+    if (state.events.update) {
+      state.events.update(); // Raycasts every frame rather than on pointer-move
+    }
+    easing.damp3(
+      state.camera.position,
+      // 鏡頭移動速度
+      [-state.pointer.x / 2, state.pointer.y / 4, 3],
+      0.5,
+      delta
+    ); // Move camera
+    state.camera.lookAt(0, 0, 0); // Look at center
+  });
+  return <group ref={ref} {...props} />;
+}
+
+function Carousel({
+  radius = 2,
+  count = 8,
+}: {
+  radius: number;
+  count: number;
+}) {
+  return Array.from({ length: count }, (_, i) => (
+    <Card
+      key={i}
+      url={`/img${Math.floor(i % 10) + 1}_.jpg`}
+      position={[
+        Math.sin((i / count) * Math.PI * 2) * radius,
+        0,
+        Math.cos((i / count) * Math.PI * 2) * radius,
+      ]}
+      rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}
+    />
+  ));
+}
+
+function Card({
+  url,
+  ...props
+}: {
+  url: string;
+  children: React.ReactNode | undefined;
+}) {
+  const ref = useRef<THREE.Mesh>(null);
+  const [hovered, hover] = useState(false);
+  const pointerOver = (e: React.MouseEvent) => (
+    e.stopPropagation(), hover(true)
+  );
+  const pointerOut = () => hover(false);
+  useFrame((state, delta) => {
+    if (!ref.current) return;
+    // 外層容器 Image Container
+    easing.damp3(ref.current.scale, hovered ? 1.15 : 1, 0.1, delta);
+    // Container Border Radius
+    easing.damp(
+      ref.current.material,
+      "radius",
+      hovered ? 0.1 : 0.1,
+      0.2,
+      delta
+    );
+    // 內層圖片 Image 2: 1(縮放倍數 scale), 0.2(動畫秒數, duration), delta
+    easing.damp(ref.current.material, "zoom", hovered ? 1.3 : 1, 0.2, delta);
+  });
+  return (
+    <Image
+      alt="image"
+      ref={ref}
+      url={url}
+      transparent
+      side={THREE.DoubleSide}
+      onPointerOver={pointerOver}
+      onPointerOut={pointerOut}
+      {...props}
+    >
+      {/* Image 的彎曲程度 */}
+      <bentPlaneGeometry args={[0.1, 1, 1, 20, 20]} />
+    </Image>
   );
 }
