@@ -25,11 +25,15 @@ export default function App() {
 function Rig(props: { children: React.ReactNode; rotation: number[] }) {
   const ref = useRef<THREE.Group>(null);
   const scroll = useScroll();
+  const [isHover, setIsHover] = useState(false);
+  
   useFrame((state, delta) => {
     if (!ref.current) return;
     // y軸隨時間和捲動旋轉
     const t = state.clock.getElapsedTime();
-    ref.current.rotation.y = -t / 12 - scroll.offset * (Math.PI * 2); // Rotate contents
+    ref.current.rotation.y = isHover
+      ? -scroll.offset * (Math.PI * 2)
+      : -t / 12 - scroll.offset * (Math.PI * 2); // Rotate contents
     if (state.events.update) {
       state.events.update(); // Raycasts every frame rather than on pointer-move
     }
@@ -42,7 +46,14 @@ function Rig(props: { children: React.ReactNode; rotation: number[] }) {
     ); // Move camera
     state.camera.lookAt(0, 0, 0); // Look at center
   });
-  return <group ref={ref} {...props} />;
+  return (
+    <group
+      ref={ref}
+      {...props}
+      onPointerOver={() => setIsHover(true)}
+      onPointerOut={() => setIsHover(false)}
+    />
+  );
 }
 
 function Carousel({

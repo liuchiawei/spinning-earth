@@ -34,12 +34,12 @@ export default function ThemeToggle() {
             size="icon"
             onClick={() => setTheme(isDark ? "light" : "dark")}
             aria-label="Toggle theme"
-            className="cursor-pointer"
+            className="size-8 cursor-pointer fixed top-6 right-6 z-50"
           >
             {isDark ? (
-              <Sun className="h-4 w-4" />
+              <Sun />
             ) : (
-              <Moon className="h-4 w-4" />
+              <Moon />
             )}
           </Button>
         </TooltipTrigger>
