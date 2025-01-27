@@ -20,13 +20,6 @@ export default function App() {
   return (
     <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
       <fog attach="fog" args={["#a53", 8.5, 12]} />
-      <OrbitControls
-        enableZoom={false} // 禁用缩放
-        minAzimuthAngle={-Infinity} // 允许水平旋转的最小角度
-        maxAzimuthAngle={Infinity} // 允许水平旋转的最大角度
-        minPolarAngle={0} // 允许垂直旋转的最小角度
-        maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
-      />
       <ambientLight intensity={4} />
       {/* pages 控制捲動速度，數量越少越快捲完一圈 */}
       <ScrollControls pages={2} infinite>
@@ -35,6 +28,13 @@ export default function App() {
           <Carousel radius={2.4} count={db.length} />
         </Rig>
       </ScrollControls>
+      <OrbitControls
+        enableZoom={false} // 禁用缩放
+        minAzimuthAngle={-Infinity} // 允许水平旋转的最小角度
+        maxAzimuthAngle={Infinity} // 允许水平旋转的最大角度
+        minPolarAngle={0} // 允许垂直旋转的最小角度
+        maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
+      />
     </Canvas>
   );
 }
@@ -131,9 +131,9 @@ function Card({
         <bentPlaneGeometry args={[0.08, 1, 1, 20, 1]} />
       </Image>
       {hovered && (
-        <Billboard position={[0, 0.8,-0.3]}>
+        <Billboard position={[0, 1, 0.8]}>
           <Text
-            fontSize={0.1}
+            fontSize={0.2}
             anchorX="center"
             anchorY="middle"
           >
