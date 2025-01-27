@@ -31,6 +31,10 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ThemeToggle />
           <div className="bg-dot-32-s-1-foreground/50 h-screen w-full relative pointer-events-none z-0">
+            <div className="absolute top-8 left-8 gap-2 flex flex-col justify-center items-center md:items-start z-10 *:text-white">
+            <h1 className="text-6xl font-bold">世界を揺るがす企業</h1>
+            <h2 className="text-xl">未来を創る、今ここに。</h2>
+          </div>
             {children}
           </div>
         </ThemeProvider>

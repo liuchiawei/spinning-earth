@@ -45,6 +45,7 @@ export default function SpinCarousel() {
           backgroundRotation={[0.8, 3.2, 0.5]} // 背景旋轉
         />
       </Canvas>
+      {/* TODO: Loader style */}
       <Loader
         barStyles={{ background: "#000", color: "#fff" }}
         dataStyles={{ color: "red" }}
