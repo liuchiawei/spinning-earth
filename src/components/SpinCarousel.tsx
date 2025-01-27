@@ -2,7 +2,7 @@
 
 import * as THREE from "three";
 import { useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame} from "@react-three/fiber";
 import {
   Image,
   useScroll,
@@ -18,25 +18,31 @@ import { easing } from "maath";
 import "./util";
 
 export default function SpinCarousel() {
+  // stop other eventlistener when orbiting
+  const [isOrbiting, setIsOrbiting] = useState(false);
+  const handleStart = () => setIsOrbiting(true);
+  const handleEnd = () => setIsOrbiting(false);
+
   return (
     <>
       <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
-        <fog attach="fog" args={["#a53", 8.5, 12]} />
-        <ambientLight intensity={4} />
-        {/* pages 控制捲動速度，數量越少越快捲完一圈 */}
-        <ScrollControls pages={2} infinite>
-          {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
-          <Rig rotation={new THREE.Euler(0.2, 0, 0.15)}>
-            <Carousel radius={2.4} count={db.length} />
-          </Rig>
-        </ScrollControls>
         <OrbitControls
+          onStart={handleStart}
+          onEnd={handleEnd}
           enableZoom={false} // 禁用缩放
           minAzimuthAngle={-Infinity} // 允许水平旋转的最小角度
           maxAzimuthAngle={Infinity} // 允许水平旋转的最大角度
           minPolarAngle={0} // 允许垂直旋转的最小角度
           maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
         />
+        <fog attach="fog" args={["#a53", 8.5, 12]} />
+        {/* pages 控制捲動速度，數量越少越快捲完一圈 */}
+        <ScrollControls pages={2} infinite>
+          {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
+          <Rig rotation={new THREE.Euler(0.2, 0, 0.15)}>
+            <Carousel radius={2.4} count={db.length} isOrbiting={isOrbiting} />
+          </Rig>
+        </ScrollControls>
         <Environment
           preset="dawn" // 背景預設圖片
           background={true} // 背景是否顯示
@@ -49,7 +55,6 @@ export default function SpinCarousel() {
       <Loader
         barStyles={{ background: "#000", color: "#fff" }}
         dataStyles={{ color: "red" }}
-        data={["Loading..."]}
       />
     </>
   );
@@ -71,12 +76,21 @@ function Rig(props: { children: React.ReactNode; rotation: THREE.Euler }) {
   return <group ref={ref} {...props} />;
 }
 
-function Carousel({ radius, count }: { radius: number; count: number }) {
+function Carousel({
+  radius,
+  count,
+  isOrbiting,
+}: {
+  radius: number;
+  count: number;
+  isOrbiting: boolean;
+}) {
   return db.map((item, i) => (
     <Card
       key={i}
       url={item.url}
       title={item.title}
+      isOrbiting={isOrbiting}
       position={[
         Math.sin((i / count) * Math.PI * 2) * radius,
         0,
@@ -90,10 +104,12 @@ function Carousel({ radius, count }: { radius: number; count: number }) {
 function Card({
   url,
   title,
+  isOrbiting,
   ...props
 }: {
   url: string;
   title: string;
+  isOrbiting: boolean;
   children: React.ReactNode | undefined;
 }) {
   const ref = useRef<THREE.Mesh>(null);
@@ -116,14 +132,24 @@ function Card({
     // 內層圖片 Image 2: 1(縮放倍數 scale), 0.2(動畫秒數, duration), delta
     easing.damp(ref.current.material, "zoom", hovered ? 1.3 : 1, 0.2, delta);
   });
+
   return (
     <group
       {...props}
       onPointerOver={(e) => {
-        e.stopPropagation();
-        setHovered(true);
+        if (isOrbiting) return;
+        if (!isOrbiting) {
+          e.stopPropagation();
+          setHovered(true);
+        }
       }}
-      onPointerOut={() => setHovered(false)}
+      onPointerOut={(e) => {
+        if (isOrbiting) return;
+        if (!isOrbiting) {
+          e.stopPropagation();
+          setHovered(false);
+        }
+      }}
     >
       <Image
         alt="image"
