@@ -2,71 +2,76 @@
 
 import * as THREE from "three";
 import { useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Image, ScrollControls, useScroll } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import {
+  Image,
+  Html,
+  useScroll,
+  useCursor,
+  Billboard,
+  Text,
+  ScrollControls,
+  OrbitControls
+} from "@react-three/drei";
 import { easing } from "maath";
 import "./util";
 
 export default function App() {
   return (
-    <Canvas camera={{ position: [0, 0, 100], fov: 100 }}>
+    <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
       <fog attach="fog" args={["#a53", 8.5, 12]} />
+      <OrbitControls
+        enableZoom={false} // 禁用缩放
+        minAzimuthAngle={-Infinity} // 允许水平旋转的最小角度
+        maxAzimuthAngle={Infinity} // 允许水平旋转的最大角度
+        minPolarAngle={0} // 允许垂直旋转的最小角度
+        maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
+      />
+      <ambientLight intensity={4} />
       {/* pages 控制捲動速度，數量越少越快捲完一圈 */}
       <ScrollControls pages={2} infinite>
         {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
-        <Rig rotation={[0.2, 0, 0.15]}>
-          <Carousel radius={2} count={8} />
+        <Rig rotation={new THREE.Euler(0.2, 0, 0.15)}>
+          <Carousel radius={2.4} count={db.length} />
         </Rig>
       </ScrollControls>
     </Canvas>
   );
 }
 
-function Rig(props: { children: React.ReactNode; rotation: number[] }) {
+function Rig(props: { children: React.ReactNode; rotation: THREE.Euler }) {
   const ref = useRef<THREE.Group>(null);
   const scroll = useScroll();
-  const [isHover, setIsHover] = useState(false);
-  
-  useFrame((state, delta) => {
+
+  useFrame((state) => {
     if (!ref.current) return;
     // y軸隨時間和捲動旋轉
     const t = state.clock.getElapsedTime();
-    ref.current.rotation.y = isHover
-      ? -scroll.offset * (Math.PI * 2)
-      : -t / 12 - scroll.offset * (Math.PI * 2); // Rotate contents
+    ref.current.rotation.y = -t / 12 - scroll.offset * (Math.PI * 2); // Rotate contents
     if (state.events.update) {
       state.events.update(); // Raycasts every frame rather than on pointer-move
     }
-    easing.damp3(
-      state.camera.position,
-      // 鏡頭移動速度
-      [-state.pointer.x / 2, state.pointer.y / 4, 3],
-      0.5,
-      delta
-    ); // Move camera
-    state.camera.lookAt(0, 0, 0); // Look at center
   });
   return (
     <group
       ref={ref}
       {...props}
-      onPointerOver={() => setIsHover(true)}
-      onPointerOut={() => setIsHover(false)}
     />
   );
 }
 
 function Carousel({
-  radius = 2,
-  count = 8,
+  radius,
+  count,
 }: {
   radius: number;
   count: number;
-}) {
-  return Array.from({ length: count }, (_, i) => (
+}) {  
+  return db.map((item, i) => (
     <Card
       key={i}
-      url={`/img${Math.floor(i % 10) + 1}_.jpg`}
+      url={item.url}
+      title={item.title}
       position={[
         Math.sin((i / count) * Math.PI * 2) * radius,
         0,
@@ -79,17 +84,18 @@ function Carousel({
 
 function Card({
   url,
+  title,
   ...props
 }: {
   url: string;
+  title: string;
   children: React.ReactNode | undefined;
 }) {
   const ref = useRef<THREE.Mesh>(null);
-  const [hovered, hover] = useState(false);
-  const pointerOver = (e: React.MouseEvent) => (
-    e.stopPropagation(), hover(true)
-  );
-  const pointerOut = () => hover(false);
+  const [hovered, setHovered] = useState(false);
+  // 讓游標在 hover 時顯示 pointer 指標，並在 hover 結束時恢復指標
+  useCursor(hovered, "pointer", "auto");
+
   useFrame((state, delta) => {
     if (!ref.current) return;
     // 外層容器 Image Container
@@ -106,18 +112,92 @@ function Card({
     easing.damp(ref.current.material, "zoom", hovered ? 1.3 : 1, 0.2, delta);
   });
   return (
-    <Image
-      alt="image"
-      ref={ref}
-      url={url}
-      transparent
-      side={THREE.DoubleSide}
-      onPointerOver={pointerOver}
-      onPointerOut={pointerOut}
+    <group
       {...props}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHovered(true);
+      }}
+      onPointerOut={() => setHovered(false)}
     >
-      {/* Image 的彎曲程度 */}
-      <bentPlaneGeometry args={[0.1, 1, 1, 20, 20]} />
-    </Image>
+      <Image
+        alt="image"
+        ref={ref}
+        url={url}
+        transparent
+        side={THREE.DoubleSide}
+      >
+        {/* Image 的彎曲程度 */}
+        <bentPlaneGeometry args={[0.08, 1, 1, 20, 1]} />
+      </Image>
+      {hovered && (
+        <Billboard position={[0, 0.8,-0.3]}>
+          <Text
+            fontSize={0.1}
+            anchorX="center"
+            anchorY="middle"
+          >
+            {title}
+          </Text>
+        </Billboard>
+      )}
+    </group>
   );
 }
+
+const db: {
+  title: string;
+  description: string;
+  url: string;
+}[] = [
+  {
+    title: "No.1 新宿",
+    description: "東京最熱鬧的購物區",
+    url: "/img1_.jpg",
+  },
+  {
+    title: "No.2 澀谷",
+    description: "東京最潮的購物區",
+    url: "/img2_.jpg",
+  },
+  {
+    title: "No.3 原宿",
+    description: "東京最潮的購物區",
+    url: "/img3_.jpg",
+  },
+  {
+    title: "No.4 表參道",
+    description: "東京最潮的購物區",
+    url: "/img4_.jpg",
+  },
+  {
+    title: "No.5 代代木",
+    description: "東京最潮的購物區",
+    url: "/img5_.jpg",
+  },
+  {
+    title: "No.6 六本木",
+    description: "東京最潮的購物區",
+    url: "/img6_.jpg",
+  },
+  {
+    title: "No.7 銀座",
+    description: "東京最潮的購物區",
+    url: "/img7_.jpg",
+  },
+  {
+    title: "No.8 池袋",
+    description: "東京最潮的購物區",
+    url: "/img8_.jpg",
+  },
+  {
+    title: "No.9 上野",
+    description: "東京最潮的購物區",
+    url: "/img9_.jpg",
+  },
+  {
+    title: "No.10 淺草",
+    description: "東京最潮的購物區",
+    url: "/img10_.jpg",
+  },
+];

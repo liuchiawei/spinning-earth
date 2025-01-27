@@ -30,7 +30,7 @@ export default function RootLayout({
       <body className={`${roboto.variable} ${notoSansJP.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ThemeToggle />
-          <div className="bg-dot-32-s-1-foreground/50 h-screen w-full absolute pointer-events-none z-0">
+          <div className="bg-dot-32-s-1-foreground/50 h-screen w-full relative pointer-events-none z-0">
             {children}
           </div>
         </ThemeProvider>
