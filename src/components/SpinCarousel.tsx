@@ -12,37 +12,45 @@ import {
   ScrollControls,
   OrbitControls,
   Environment,
+  Loader,
 } from "@react-three/drei";
 import { easing } from "maath";
 import "./util";
 
 export default function SpinCarousel() {
   return (
-    <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
-      <fog attach="fog" args={["#a53", 8.5, 12]} />
-      <ambientLight intensity={4} />
-      {/* pages 控制捲動速度，數量越少越快捲完一圈 */}
-      <ScrollControls pages={2} infinite>
-        {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
-        <Rig rotation={new THREE.Euler(0.2, 0, 0.15)}>
-          <Carousel radius={2.4} count={db.length} />
-        </Rig>
-      </ScrollControls>
-      <OrbitControls
-        enableZoom={false} // 禁用缩放
-        minAzimuthAngle={-Infinity} // 允许水平旋转的最小角度
-        maxAzimuthAngle={Infinity} // 允许水平旋转的最大角度
-        minPolarAngle={0} // 允许垂直旋转的最小角度
-        maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
+    <>
+      <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+        <fog attach="fog" args={["#a53", 8.5, 12]} />
+        <ambientLight intensity={4} />
+        {/* pages 控制捲動速度，數量越少越快捲完一圈 */}
+        <ScrollControls pages={2} infinite>
+          {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
+          <Rig rotation={new THREE.Euler(0.2, 0, 0.15)}>
+            <Carousel radius={2.4} count={db.length} />
+          </Rig>
+        </ScrollControls>
+        <OrbitControls
+          enableZoom={false} // 禁用缩放
+          minAzimuthAngle={-Infinity} // 允许水平旋转的最小角度
+          maxAzimuthAngle={Infinity} // 允许水平旋转的最大角度
+          minPolarAngle={0} // 允许垂直旋转的最小角度
+          maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
+        />
+        <Environment
+          preset="dawn" // 背景預設圖片
+          background={true} // 背景是否顯示
+          backgroundBlurriness={0.55} // 背景模糊程度
+          backgroundIntensity={0.015} // 背景亮度
+          backgroundRotation={[0.8, 3.2, 0.5]} // 背景旋轉
+        />
+      </Canvas>
+      <Loader
+        barStyles={{ background: "#000", color: "#fff" }}
+        dataStyles={{ color: "red" }}
+        data={["Loading..."]}
       />
-      <Environment
-        preset="dawn" // 背景預設圖片
-        background={true} // 背景是否顯示
-        backgroundBlurriness={0.55} // 背景模糊程度
-        backgroundIntensity={0.015} // 背景亮度
-        backgroundRotation={[0.8, 3.2, 0]} // 背景旋轉
-      />
-    </Canvas>
+    </>
   );
 }
 
