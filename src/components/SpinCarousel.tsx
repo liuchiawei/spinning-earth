@@ -2,7 +2,7 @@
 
 import * as THREE from "three";
 import { useRef, useState } from "react";
-import { Canvas, useFrame} from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Image,
   useScroll,
@@ -16,6 +16,8 @@ import {
 } from "@react-three/drei";
 import { easing } from "maath";
 import "./util";
+import MeshCard from "./MeshCard";
+import R3fGlobe from "r3f-globe";
 
 export default function SpinCarousel() {
   // stop other eventlistener when orbiting
@@ -25,7 +27,7 @@ export default function SpinCarousel() {
 
   return (
     <>
-      <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+      <Canvas camera={{ position: [0, 0, 5], fov: 60 }} className="touch-none">
         <OrbitControls
           onStart={handleStart}
           onEnd={handleEnd}
@@ -35,12 +37,15 @@ export default function SpinCarousel() {
           minPolarAngle={0} // 允许垂直旋转的最小角度
           maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
         />
+        <ambientLight intensity={0.1} />
+        <directionalLight position={[5, 5, 5]} />
         <fog attach="fog" args={["#a53", 8.5, 12]} />
         {/* pages 控制捲動速度，數量越少越快捲完一圈 */}
         <ScrollControls pages={2} infinite>
           {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
           <Rig rotation={new THREE.Euler(0.2, 0, 0.15)}>
             <Carousel radius={2.4} count={db.length} isOrbiting={isOrbiting} />
+            <Earth />
           </Rig>
         </ScrollControls>
         <Environment
@@ -169,6 +174,19 @@ function Card({
         </Billboard>
       )}
     </group>
+  );
+}
+
+function Earth() {
+  return (
+    <mesh>
+      <sphereGeometry args={[1, 32, 32]} />
+      <meshStandardMaterial
+        map={new THREE.TextureLoader().load(
+          "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+        )}
+      />
+    </mesh>
   );
 }
 
