@@ -35,7 +35,13 @@ export default function SpinCarousel() {
         minPolarAngle={0} // 允许垂直旋转的最小角度
         maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
       />
-      <Environment preset="sunset" background />
+      <Environment
+        preset="dawn" // 背景預設圖片
+        background={true} // 背景是否顯示
+        backgroundBlurriness={0.55} // 背景模糊程度
+        backgroundIntensity={0.015} // 背景亮度
+        backgroundRotation={[0.8, 3.2, 0]} // 背景旋轉
+      />
     </Canvas>
   );
 }
