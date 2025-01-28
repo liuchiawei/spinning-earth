@@ -209,6 +209,8 @@ function Card({
   url,
   title,
   description,
+  position,
+  rotation,
   isOrbiting,
   isSelected,
   setSelectedCardId,
@@ -218,6 +220,8 @@ function Card({
   url: string;
   title: string;
   description: string;
+  position: number[];
+  rotation: number[];
   isOrbiting: boolean;
   isSelected: boolean;
   setSelectedCardId: (id: number | null) => void;
