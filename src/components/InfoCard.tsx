@@ -15,7 +15,7 @@ export default function InfoCard({
   const isMobile = useMobile();
   return (
     <Html
-      position={isMobile ? [0, 2.2, 2.2] : [0, 2.2, 3.2]}
+      position={isMobile ? [0, 2.2, 2.2] : [0, 2.4, 3.2]}
       className="fixed top-0 left-0  backdrop-blur-sm w-full h-full"
     >
       <CardContainer className="inter-var">
@@ -29,7 +29,7 @@ export default function InfoCard({
               src={url}
               width={300}
               height={200}
-              className="rounded-3xl"
+              className="rounded-2xl shadow-xl"
             />
           </CardItem>
           <CardItem translateZ={50}>
