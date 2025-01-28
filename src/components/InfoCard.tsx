@@ -1,6 +1,7 @@
 import { CardItem, CardContainer, CardBody } from "./ui/3d-card";
 import { Html } from "@react-three/drei";
 import Image from "next/image";
+import { useMobile } from "@/hook/useMobile";
 
 export default function InfoCard({
   title,
@@ -11,17 +12,18 @@ export default function InfoCard({
   description: string;
   url: string;
 }) {
+  const isMobile = useMobile();
   return (
     <Html
-      position={[0, 0, 0]}
-      className="fixed top-1/2 left-0 -translate-y-1/2"
+      position={isMobile ? [0, 2.2, 2.2] : [0, 2.2, 3.2]}
+      className="fixed top-0 left-0  backdrop-blur-sm w-full h-full"
     >
       <CardContainer className="inter-var">
-        <CardBody className="w-[240px] h-[180px] md:w-[400px] md:h-[300px] flex flex-col items-center justify-center rounded-3xl bg-gray-50/50 gap-2 border border-white/70 text-white">
+        <CardBody className="w-[320px] md:w-[400px] h-full flex flex-col items-center justify-center rounded-3xl bg-gray-50/20 gap-2 border border-white/70 text-white p-6 gap-6">
           <CardItem translateZ={20}>
-            <h1 className="text-2xl font-bold">{title}</h1>
+            <h1 className="text-2xl md:text-5xl font-bold">{title}</h1>
           </CardItem>
-          <CardItem translateZ={100}>
+          <CardItem translateZ={120}>
             <Image
               alt="Image Here."
               src={url}

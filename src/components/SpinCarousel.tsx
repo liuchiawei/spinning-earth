@@ -1,8 +1,8 @@
 "use client";
 
 import * as THREE from "three";
-import { useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, useState, useEffect } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   Image,
   useCursor,
@@ -19,58 +19,79 @@ import Earth from "./Earth";
 import { useMobile } from "@/hook/useMobile";
 
 const db: {
+  id: number;
   title: string;
   description: string;
   url: string;
 }[] = [
   {
+    id: 1,
     title: "Apple",
-    description: "東京最熱鬧的購物區",
+    description:
+      "直感的なデバイスとエコシステムを提供し、デジタルライフをシンプルかつ快適に。スマートフォンの普及を主導。",
     url: "/img1_.jpg",
   },
   {
+    id: 2,
     title: "Alphabet",
-    description: "東京最潮的購物區",
+    description:
+      "検索・広告・クラウド技術を通じて情報アクセスを変革。AIや自動運転技術の発展にも貢献し、日常生活やビジネスの形を再定義。",
     url: "/img2_.jpg",
   },
   {
+    id: 3,
     title: "Microsoft",
-    description: "東京最潮的購物區",
+    description:
+      "OS、クラウド、AIを通じてビジネスと個人の生産性を向上。企業や開発者向けツールの提供により、業務のデジタル化を加速。",
     url: "/img3_.jpg",
   },
   {
+    id: 4,
     title: "Open AI",
-    description: "東京最潮的購物區",
+    description:
+      "AIの進化を牽引し、自然言語処理や創造的作業の自動化を推進。人々の働き方や情報取得の方法に革新をもたらす。",
     url: "/img4_.jpg",
   },
   {
+    id: 5,
     title: "Amazon",
-    description: "東京最潮的購物區",
+    description:
+      "ECとクラウドサービスを発展させ、購買行動や物流を効率化。AI活用により、パーソナライズ化された消費体験を提供。",
     url: "/img5_.jpg",
   },
   {
+    id: 6,
     title: "Meta",
-    description: "東京最潮的購物區",
+    description:
+      "SNSとメタバース技術を活用し、デジタル上の交流や経済活動を拡張。VR・ARの普及を加速し、次世代コミュニケーションを創出。",
     url: "/img6_.jpg",
   },
   {
+    id: 7,
     title: "Tesla",
-    description: "東京最潮的購物區",
+    description:
+      "電気自動車の普及を加速し、持続可能なエネルギー社会の実現を推進。人々の移動手段やエネルギー利用の在り方を変革。",
     url: "/img7_.jpg",
   },
   {
+    id: 8,
     title: "Nvidia",
-    description: "東京最潮的購物區",
+    description:
+      "GPU技術を進化させ、AI、ゲーム、データ処理の性能を飛躍的に向上。ディープラーニングや自動運転技術の発展を支える。",
     url: "/img8_.jpg",
   },
   {
+    id: 9,
     title: "Byte Dance",
-    description: "東京最潮的購物區",
+    description:
+      "短尺動画プラットフォームを通じてコンテンツ消費を変革。AIによるレコメンド技術で、人々の情報取得やエンタメの嗜好を変える。",
     url: "/img9_.jpg",
   },
   {
+    id: 10,
     title: "Space X",
-    description: "東京最潮的購物區",
+    description:
+      "宇宙開発のコストを劇的に削減し、民間宇宙事業を拡大。火星移住計画を推進し、宇宙旅行の新たな可能性を開く。",
     url: "/img10_.jpg",
   },
 ];
@@ -81,6 +102,8 @@ export default function SpinCarousel() {
   const [isOrbiting, setIsOrbiting] = useState(false);
   const handleStart = () => setIsOrbiting(true);
   const handleEnd = () => setIsOrbiting(false);
+
+  const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   return (
     <>
@@ -96,8 +119,17 @@ export default function SpinCarousel() {
         />
         <directionalLight position={[4, 1, 0]} intensity={5} />
         {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
-        <Rig rotation={new THREE.Euler(0.2, 0, 0.15)} position={new THREE.Vector3(0, -0.4, 0)}>
-          <Carousel radius={isMobile ? 2.2 : 3.2} count={db.length} isOrbiting={isOrbiting} />
+        <Rig
+          rotation={new THREE.Euler(0.2, 0, 0.15)}
+          position={new THREE.Vector3(0, -0.4, 0)}
+        >
+          <Carousel
+            radius={isMobile ? 2.2 : 3.2}
+            count={db.length}
+            isOrbiting={isOrbiting}
+            selectedCardId={selectedCardId}
+            setSelectedCardId={setSelectedCardId}
+          />
           <Earth />
         </Rig>
         <Environment
@@ -107,6 +139,8 @@ export default function SpinCarousel() {
           backgroundIntensity={0.015} // 背景亮度
           backgroundRotation={[0.5, 0.8, 0.5]} // 背景旋轉
         />
+        {/* 添加全局點擊處理器 */}
+        <GlobalClickHandler setSelectedCardId={setSelectedCardId} />
       </Canvas>
       {/* TODO: Loader style */}
       <Loader
@@ -117,7 +151,11 @@ export default function SpinCarousel() {
   );
 }
 
-function Rig(props: { children: React.ReactNode; rotation: THREE.Euler; position: THREE.Vector3 }) {
+function Rig(props: {
+  children: React.ReactNode;
+  rotation: THREE.Euler;
+  position: THREE.Vector3;
+}) {
   const ref = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -137,47 +175,58 @@ function Carousel({
   radius,
   count,
   isOrbiting,
+  selectedCardId,
+  setSelectedCardId,
 }: {
   radius: number;
   count: number;
   isOrbiting: boolean;
+  selectedCardId: number | null;
+  setSelectedCardId: (id: number | null) => void;
 }) {
-  return db.map((item, i) => (
+  return db.map((item) => (
     <Card
-      key={i}
+      id={item.id}
+      key={item.id}
       url={item.url}
       title={item.title}
       description={item.description}
       isOrbiting={isOrbiting}
+      isSelected={selectedCardId === item.id}
+      setSelectedCardId={setSelectedCardId}
       position={[
-        Math.sin((i / count) * Math.PI * 2) * radius,
+        Math.sin((item.id / count) * Math.PI * 2) * radius,
         0,
-        Math.cos((i / count) * Math.PI * 2) * radius,
+        Math.cos((item.id / count) * Math.PI * 2) * radius,
       ]}
-      rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}
+      rotation={[0, Math.PI + (item.id / count) * Math.PI * 2, 0]}
     />
   ));
 }
 
 function Card({
+  id,
   url,
   title,
   description,
   isOrbiting,
+  isSelected,
+  setSelectedCardId,
   ...props
 }: {
+  id: number;
   url: string;
   title: string;
   description: string;
   isOrbiting: boolean;
-  children: React.ReactNode | undefined;
+  isSelected: boolean;
+  setSelectedCardId: (id: number | null) => void;
+  children?: React.ReactNode | undefined;
 }) {
   const ref = useRef<THREE.Mesh>(null);
   // 讓游標在 hover 時顯示 pointer 指標，並在 hover 結束時恢復指標
   const [hovered, setHovered] = useState(false);
   useCursor(hovered, "pointer", "auto");
-  // click 時顯示 infoCard
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useFrame((state, delta) => {
     if (!ref.current) return;
@@ -196,15 +245,16 @@ function Card({
   });
 
   // click 時顯示 infoCard
-  const handleDialog = () => {
-    setIsDialogOpen(!isDialogOpen);
+  const handleDialog = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation(); // 阻止事件冒泡，避免觸發全局點擊關閉
+    setSelectedCardId(isSelected ? null : id);
   };
 
   return (
     <group
       {...props}
       onPointerOver={(e) => {
-        if (isOrbiting) return;
+        if (isOrbiting || isSelected) return;
         if (!isOrbiting) {
           e.stopPropagation();
           setHovered(true);
@@ -219,6 +269,7 @@ function Card({
       }}
     >
       <Image
+        name="card-image" // 用於識別點擊事件
         alt="image"
         ref={ref}
         url={url}
@@ -229,14 +280,62 @@ function Card({
         {/* Image 的彎曲程度 */}
         <bentPlaneGeometry args={[0.08, 1, 1, 20, 1]} />
       </Image>
-      {hovered && (
-        <Billboard position={[0, 1, 0.1]}>
-          <Text fontSize={0.2} anchorX="center" anchorY="middle">
+      {(hovered || isSelected) && (
+        <Billboard position={[0, 0.8, 0.1]}>
+          <Text fontSize={0.1} anchorX="center" anchorY="middle">
             {title}
           </Text>
         </Billboard>
       )}
-      {isDialogOpen && <InfoCard title={title} description={description} url={url} />}
+      {isSelected && (
+        <InfoCard title={title} description={description} url={url} />
+      )}
     </group>
   );
+}
+
+/**
+ * GlobalClickHandler 組件用於處理 Canvas 內的全局點擊事件。
+ * 當用戶點擊 Canvas 但未點擊到任何卡片時，會關閉所有打開的 InfoCard。
+ */
+function GlobalClickHandler({ setSelectedCardId }: { setSelectedCardId: (id: number | null) => void }) {
+  const { gl, scene, camera } = useThree();
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      // 獲取 Canvas 的邊界
+      const rect = gl.domElement.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      // 將點擊位置轉換為 NDC (Normalized Device Coordinates)
+      const pointer = new THREE.Vector2(
+        (x / rect.width) * 2 - 1,
+        -(y / rect.height) * 2 + 1
+      );
+
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(pointer, camera);
+      const intersects = raycaster.intersectObjects(scene.children, true);
+
+      // 判斷是否點擊在任何一個名為 "card-image" 的物件上
+      const clickedOnImage = intersects.some((intersect) =>
+        intersect.object.name === "card-image"
+      );
+
+      // 如果點擊的位置不是任何一張卡片，則關閉所有 InfoCard
+      if (!clickedOnImage) {
+        setSelectedCardId(null);
+      }
+    };
+
+    // 添加點擊事件監聽器
+    gl.domElement.addEventListener("click", handleClick);
+    return () => {
+      // 清理事件監聽器
+      gl.domElement.removeEventListener("click", handleClick);
+    };
+  }, [gl, scene, camera, setSelectedCardId]);
+
+  return null; // 這個組件不需要渲染任何東西
 }

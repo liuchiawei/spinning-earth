@@ -28,15 +28,15 @@ export default function RootLayout({
     <html lang="ja">
       <body className={`${roboto.variable} ${notoSansJP.variable} antialiased`}>
         <div className="h-screen w-full relative pointer-events-none z-0 overflow-hidden">
-          <div className="w-screen absolute top-8 left-1/2 md:left-8 -translate-x-1/2 md:translate-x-0 gap-2 flex flex-col justify-center items-center md:items-start z-10 *:text-white text-center md:text-left">
-            <h1 className="text-3xl md:text-6xl font-bold">
+          <div className="w-screen absolute top-8 left-1/2 md:left-8 -translate-x-1/2 md:translate-x-0 gap-2 flex flex-col justify-center items-center md:items-start z-10 text-center md:text-left">
+            <h1 className="text-3xl md:text-6xl font-bold text-white">
               世界を揺るがす企業
             </h1>
-            <h2 className="text-md md:text-xl">未来を創る、今ここに。</h2>
+            <h2 className="text-md md:text-xl text-gray-100">未来を創る、今ここに。</h2>
           </div>
-          <div className="absolute bottom-8 left-8 z-10 text-white/50">
-            <h3>ドラッグしてカメラを移動</h3>
-            <h3>スクロールしてズームイン／アウト</h3>
+          <div className="absolute bottom-8 left-8 z-10 text-sm md:text-xl text-gray-100">
+            <h3>ドラッグして画面を回転</h3>
+            <h3>スクロールして画面を拡大</h3>
           </div>
 
           {children}
