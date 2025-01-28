@@ -33,6 +33,4 @@ class BentPlaneGeometry extends THREE.PlaneGeometry {
   }
 }
 
-
-
 extend({ BentPlaneGeometry });

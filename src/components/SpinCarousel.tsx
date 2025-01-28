@@ -194,12 +194,16 @@ function Carousel({
       isOrbiting={isOrbiting}
       isSelected={selectedCardId === item.id}
       setSelectedCardId={setSelectedCardId}
-      position={new THREE.Vector3(
-        Math.sin((item.id / count) * Math.PI * 2) * radius,
-        0,
-        Math.cos((item.id / count) * Math.PI * 2) * radius,
-      )}
-      rotation={new THREE.Euler(0, Math.PI + (item.id / count) * Math.PI * 2, 0)}
+      position={
+        new THREE.Vector3(
+          Math.sin((item.id / count) * Math.PI * 2) * radius,
+          0,
+          Math.cos((item.id / count) * Math.PI * 2) * radius
+        )
+      }
+      rotation={
+        new THREE.Euler(0, Math.PI + (item.id / count) * Math.PI * 2, 0)
+      }
     />
   ));
 }
@@ -283,8 +287,8 @@ function Card({
         side={THREE.DoubleSide}
         onClick={handleDialog}
       >
-        {/* Image 的彎曲程度 */}
-        <bentPlaneGeometry args={[0.08, 1, 1, 20, 1]} />
+        {/* Image 的彎曲程度 彎曲程度/x軸長度/y軸長度/多邊形水平面數/垂直方向面數 */}
+        <bentPlaneGeometry args={[0.08, 1, 1, 18, 1]} />
       </Image>
       {(hovered || isSelected) && (
         <Billboard position={[0, 0.8, 0.1]}>
@@ -304,7 +308,11 @@ function Card({
  * GlobalClickHandler 組件用於處理 Canvas 內的全局點擊事件。
  * 當用戶點擊 Canvas 但未點擊到任何卡片時，會關閉所有打開的 InfoCard。
  */
-function GlobalClickHandler({ setSelectedCardId }: { setSelectedCardId: (id: number | null) => void }) {
+function GlobalClickHandler({
+  setSelectedCardId,
+}: {
+  setSelectedCardId: (id: number | null) => void;
+}) {
   const { gl, scene, camera } = useThree();
 
   useEffect(() => {
@@ -325,8 +333,8 @@ function GlobalClickHandler({ setSelectedCardId }: { setSelectedCardId: (id: num
       const intersects = raycaster.intersectObjects(scene.children, true);
 
       // 判斷是否點擊在任何一個名為 "card-image" 的物件上
-      const clickedOnImage = intersects.some((intersect) =>
-        intersect.object.name === "card-image"
+      const clickedOnImage = intersects.some(
+        (intersect) => intersect.object.name === "card-image"
       );
 
       // 如果點擊的位置不是任何一張卡片，則關閉所有 InfoCard
