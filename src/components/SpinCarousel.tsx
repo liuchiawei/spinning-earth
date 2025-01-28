@@ -144,7 +144,7 @@ export default function SpinCarousel() {
       </Canvas>
       {/* TODO: Loader style */}
       <Loader
-        barStyles={{ background: "#000", color: "#fff" }}
+        barStyles={{ background: "#eeeeee", color: "#000" }}
         dataStyles={{ color: "red" }}
       />
     </>
