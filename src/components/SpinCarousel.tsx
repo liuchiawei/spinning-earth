@@ -288,7 +288,7 @@ function Card({
         onClick={handleDialog}
       >
         {/* Image 的彎曲程度 彎曲程度/x軸長度/y軸長度/多邊形水平面數/垂直方向面數 */}
-        <bentPlaneGeometry args={[0.08, 1, 1, 18, 1]} />
+        {/* <bentPlaneGeometry args={[0.08, 1, 1, 18, 1]} /> */}
       </Image>
       {(hovered || isSelected) && (
         <Billboard position={[0, 0.8, 0.1]}>
