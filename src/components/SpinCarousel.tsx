@@ -194,12 +194,12 @@ function Carousel({
       isOrbiting={isOrbiting}
       isSelected={selectedCardId === item.id}
       setSelectedCardId={setSelectedCardId}
-      position={[
+      position={new THREE.Vector3(
         Math.sin((item.id / count) * Math.PI * 2) * radius,
         0,
         Math.cos((item.id / count) * Math.PI * 2) * radius,
-      ]}
-      rotation={[0, Math.PI + (item.id / count) * Math.PI * 2, 0]}
+      )}
+      rotation={new THREE.Euler(0, Math.PI + (item.id / count) * Math.PI * 2, 0)}
     />
   ));
 }
@@ -209,6 +209,8 @@ function Card({
   url,
   title,
   description,
+  position,
+  rotation,
   isOrbiting,
   isSelected,
   setSelectedCardId,
@@ -218,6 +220,8 @@ function Card({
   url: string;
   title: string;
   description: string;
+  position: THREE.Vector3;
+  rotation: THREE.Euler;
   isOrbiting: boolean;
   isSelected: boolean;
   setSelectedCardId: (id: number | null) => void;
@@ -252,6 +256,8 @@ function Card({
 
   return (
     <group
+      position={position}
+      rotation={rotation}
       {...props}
       onPointerOver={(e) => {
         if (isOrbiting || isSelected) return;
