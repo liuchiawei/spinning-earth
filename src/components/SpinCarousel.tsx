@@ -199,7 +199,7 @@ function Carousel({
         0,
         Math.cos((item.id / count) * Math.PI * 2) * radius,
       )}
-      rotation={[0, Math.PI + (item.id / count) * Math.PI * 2, 0]}
+      rotation={new THREE.Euler(0, Math.PI + (item.id / count) * Math.PI * 2, 0)}
     />
   ));
 }
