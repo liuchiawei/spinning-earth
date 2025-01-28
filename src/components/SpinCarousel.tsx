@@ -88,13 +88,13 @@ export default function SpinCarousel() {
         <OrbitControls
           onStart={handleStart}
           onEnd={handleEnd}
-          enableZoom={false} // 禁用缩放
+          enableZoom={true} // 啟用/禁用缩放
           minAzimuthAngle={-Infinity} // 允许水平旋转的最小角度
           maxAzimuthAngle={Infinity} // 允许水平旋转的最大角度
           minPolarAngle={0} // 允许垂直旋转的最小角度
           maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
         />
-        <directionalLight position={[-8, -5, 0]} intensity={5} />
+        <directionalLight position={[4, 1, 0]} intensity={5} />
         {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
         <Rig rotation={new THREE.Euler(0.2, 0, 0.15)} position={new THREE.Vector3(0, -0.4, 0)}>
           <Carousel radius={isMobile ? 2.2 : 3.2} count={db.length} isOrbiting={isOrbiting} />
@@ -105,7 +105,7 @@ export default function SpinCarousel() {
           background={true} // 背景是否顯示
           backgroundBlurriness={0.55} // 背景模糊程度
           backgroundIntensity={0.015} // 背景亮度
-          backgroundRotation={[0.8, 3.2, 0.5]} // 背景旋轉
+          backgroundRotation={[0.5, 0.8, 0.5]} // 背景旋轉
         />
       </Canvas>
       {/* TODO: Loader style */}
@@ -125,7 +125,7 @@ function Rig(props: { children: React.ReactNode; rotation: THREE.Euler; position
 
     // y軸隨時間旋轉
     const t = state.clock.getElapsedTime();
-    ref.current.rotation.y = -t / 8; // Rotate contents
+    ref.current.rotation.y = t / 10; // Rotate contents
     if (state.events.update) {
       state.events.update(); // Raycasts every frame rather than on pointer-move
     }
@@ -147,6 +147,7 @@ function Carousel({
       key={i}
       url={item.url}
       title={item.title}
+      description={item.description}
       isOrbiting={isOrbiting}
       position={[
         Math.sin((i / count) * Math.PI * 2) * radius,
@@ -161,11 +162,13 @@ function Carousel({
 function Card({
   url,
   title,
+  description,
   isOrbiting,
   ...props
 }: {
   url: string;
   title: string;
+  description: string;
   isOrbiting: boolean;
   children: React.ReactNode | undefined;
 }) {
@@ -233,7 +236,7 @@ function Card({
           </Text>
         </Billboard>
       )}
-      {isDialogOpen && <InfoCard />}
+      {isDialogOpen && <InfoCard title={title} description={description} url={url} />}
     </group>
   );
 }
