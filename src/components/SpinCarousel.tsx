@@ -5,21 +5,78 @@ import { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Image,
-  useScroll,
   useCursor,
   Billboard,
   Text,
-  ScrollControls,
   OrbitControls,
   Environment,
   Loader,
 } from "@react-three/drei";
 import { easing } from "maath";
 import "./util";
-import MeshCard from "./MeshCard";
-import R3fGlobe from "r3f-globe";
+import InfoCard from "./InfoCard";
+import Earth from "./Earth";
+import { useMobile } from "@/hook/useMobile";
+
+const db: {
+  title: string;
+  description: string;
+  url: string;
+}[] = [
+  {
+    title: "Apple",
+    description: "東京最熱鬧的購物區",
+    url: "/img1_.jpg",
+  },
+  {
+    title: "Alphabet",
+    description: "東京最潮的購物區",
+    url: "/img2_.jpg",
+  },
+  {
+    title: "Microsoft",
+    description: "東京最潮的購物區",
+    url: "/img3_.jpg",
+  },
+  {
+    title: "Open AI",
+    description: "東京最潮的購物區",
+    url: "/img4_.jpg",
+  },
+  {
+    title: "Amazon",
+    description: "東京最潮的購物區",
+    url: "/img5_.jpg",
+  },
+  {
+    title: "Meta",
+    description: "東京最潮的購物區",
+    url: "/img6_.jpg",
+  },
+  {
+    title: "Tesla",
+    description: "東京最潮的購物區",
+    url: "/img7_.jpg",
+  },
+  {
+    title: "Nvidia",
+    description: "東京最潮的購物區",
+    url: "/img8_.jpg",
+  },
+  {
+    title: "Byte Dance",
+    description: "東京最潮的購物區",
+    url: "/img9_.jpg",
+  },
+  {
+    title: "Space X",
+    description: "東京最潮的購物區",
+    url: "/img10_.jpg",
+  },
+];
 
 export default function SpinCarousel() {
+  const isMobile = useMobile();
   // stop other eventlistener when orbiting
   const [isOrbiting, setIsOrbiting] = useState(false);
   const handleStart = () => setIsOrbiting(true);
@@ -37,17 +94,12 @@ export default function SpinCarousel() {
           minPolarAngle={0} // 允许垂直旋转的最小角度
           maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
         />
-        <ambientLight intensity={0.1} />
-        <directionalLight position={[5, 5, 5]} />
-        <fog attach="fog" args={["#a53", 8.5, 12]} />
-        {/* pages 控制捲動速度，數量越少越快捲完一圈 */}
-        <ScrollControls pages={2} infinite>
-          {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
-          <Rig rotation={new THREE.Euler(0.2, 0, 0.15)}>
-            <Carousel radius={2.4} count={db.length} isOrbiting={isOrbiting} />
-            <Earth />
-          </Rig>
-        </ScrollControls>
+        <directionalLight position={[-8, -5, 0]} intensity={5} />
+        {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
+        <Rig rotation={new THREE.Euler(0.2, 0, 0.15)} position={new THREE.Vector3(0, -0.4, 0)}>
+          <Carousel radius={isMobile ? 2.2 : 3.2} count={db.length} isOrbiting={isOrbiting} />
+          <Earth />
+        </Rig>
         <Environment
           preset="dawn" // 背景預設圖片
           background={true} // 背景是否顯示
@@ -65,15 +117,15 @@ export default function SpinCarousel() {
   );
 }
 
-function Rig(props: { children: React.ReactNode; rotation: THREE.Euler }) {
+function Rig(props: { children: React.ReactNode; rotation: THREE.Euler; position: THREE.Vector3 }) {
   const ref = useRef<THREE.Group>(null);
-  const scroll = useScroll();
 
   useFrame((state) => {
     if (!ref.current) return;
-    // y軸隨時間和捲動旋轉
+
+    // y軸隨時間旋轉
     const t = state.clock.getElapsedTime();
-    ref.current.rotation.y = -t / 12 - scroll.offset * (Math.PI * 2); // Rotate contents
+    ref.current.rotation.y = -t / 8; // Rotate contents
     if (state.events.update) {
       state.events.update(); // Raycasts every frame rather than on pointer-move
     }
@@ -118,9 +170,11 @@ function Card({
   children: React.ReactNode | undefined;
 }) {
   const ref = useRef<THREE.Mesh>(null);
-  const [hovered, setHovered] = useState(false);
   // 讓游標在 hover 時顯示 pointer 指標，並在 hover 結束時恢復指標
+  const [hovered, setHovered] = useState(false);
   useCursor(hovered, "pointer", "auto");
+  // click 時顯示 infoCard
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useFrame((state, delta) => {
     if (!ref.current) return;
@@ -137,6 +191,11 @@ function Card({
     // 內層圖片 Image 2: 1(縮放倍數 scale), 0.2(動畫秒數, duration), delta
     easing.damp(ref.current.material, "zoom", hovered ? 1.3 : 1, 0.2, delta);
   });
+
+  // click 時顯示 infoCard
+  const handleDialog = () => {
+    setIsDialogOpen(!isDialogOpen);
+  };
 
   return (
     <group
@@ -162,6 +221,7 @@ function Card({
         url={url}
         transparent
         side={THREE.DoubleSide}
+        onClick={handleDialog}
       >
         {/* Image 的彎曲程度 */}
         <bentPlaneGeometry args={[0.08, 1, 1, 20, 1]} />
@@ -173,76 +233,7 @@ function Card({
           </Text>
         </Billboard>
       )}
+      {isDialogOpen && <InfoCard />}
     </group>
   );
 }
-
-function Earth() {
-  return (
-    <mesh>
-      <sphereGeometry args={[1, 32, 32]} />
-      <meshStandardMaterial
-        map={new THREE.TextureLoader().load(
-          "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-        )}
-      />
-    </mesh>
-  );
-}
-
-const db: {
-  title: string;
-  description: string;
-  url: string;
-}[] = [
-  {
-    title: "No.1 新宿",
-    description: "東京最熱鬧的購物區",
-    url: "/img1_.jpg",
-  },
-  {
-    title: "No.2 澀谷",
-    description: "東京最潮的購物區",
-    url: "/img2_.jpg",
-  },
-  {
-    title: "No.3 原宿",
-    description: "東京最潮的購物區",
-    url: "/img3_.jpg",
-  },
-  {
-    title: "No.4 表參道",
-    description: "東京最潮的購物區",
-    url: "/img4_.jpg",
-  },
-  {
-    title: "No.5 代代木",
-    description: "東京最潮的購物區",
-    url: "/img5_.jpg",
-  },
-  {
-    title: "No.6 六本木",
-    description: "東京最潮的購物區",
-    url: "/img6_.jpg",
-  },
-  {
-    title: "No.7 銀座",
-    description: "東京最潮的購物區",
-    url: "/img7_.jpg",
-  },
-  {
-    title: "No.8 池袋",
-    description: "東京最潮的購物區",
-    url: "/img8_.jpg",
-  },
-  {
-    title: "No.9 上野",
-    description: "東京最潮的購物區",
-    url: "/img9_.jpg",
-  },
-  {
-    title: "No.10 淺草",
-    description: "東京最潮的購物區",
-    url: "/img10_.jpg",
-  },
-];
