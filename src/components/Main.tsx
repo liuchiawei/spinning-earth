@@ -6,7 +6,7 @@ export default function Main() {
     <div className="w-full h-full">
       <SpinCarousel db={db} />
       {/* TODO: 從Canvas中分離InfoCard */}
-      <InfoCard />
+      {/* <InfoCard /> */}
     </div>
   );
 }

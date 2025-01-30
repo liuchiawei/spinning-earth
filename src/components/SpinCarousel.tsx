@@ -45,6 +45,7 @@ export default function SpinCarousel({ db }: { db: CompanyProps[] }) {
         <directionalLight position={[4, 1, 0]} intensity={5} />
         {/* 自転軸の中心角度を制御：x:カメラ上下 y:無関係（円形のため） z:カメラ左右 */}
         <Rig
+          selectedCardId={selectedCardId}
           rotation={new THREE.Euler(0.2, 0, 0.15)}
           position={new THREE.Vector3(0, -0.4, 0)}
           hoveredCardLocation={hoveredCardLocation}
@@ -86,16 +87,22 @@ function Rig(props: {
   rotation: THREE.Euler;
   position: THREE.Vector3;
   hoveredCardLocation: string | null;
+  selectedCardId: number | null;
   handleCardHovered: (location: string) => void;
 }) {
   const ref = useRef<THREE.Group>(null);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!ref.current) return;
-
-    // 時間に応じてy軸回転
+    // 時間を取得
     const t = state.clock.getElapsedTime();
-    ref.current.rotation.y = t / 10; // コンテンツを回転
+    if (props.selectedCardId) {
+      // 今の位置を保持
+      ref.current.rotation.y = t % 10;
+    } else {
+      // 時間に応じてy軸回転
+      ref.current.rotation.y = t / 10; // コンテンツを回転
+    }
     if (state.events.update) {
       state.events.update(); // ポインター移動ではなく毎フレームレイキャスト
     }
