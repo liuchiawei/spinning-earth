@@ -98,7 +98,7 @@ const db: {
 
 export default function SpinCarousel() {
   const isMobile = useMobile();
-  // stop other eventlistener when orbiting
+  // orbit中に他のイベントリスナーを停止する
   const [isOrbiting, setIsOrbiting] = useState(false);
   const handleStart = () => setIsOrbiting(true);
   const handleEnd = () => setIsOrbiting(false);
@@ -111,14 +111,14 @@ export default function SpinCarousel() {
         <OrbitControls
           onStart={handleStart}
           onEnd={handleEnd}
-          enableZoom={true} // 啟用/禁用缩放
-          minAzimuthAngle={-Infinity} // 允许水平旋转的最小角度
-          maxAzimuthAngle={Infinity} // 允许水平旋转的最大角度
-          minPolarAngle={0} // 允许垂直旋转的最小角度
-          maxPolarAngle={Math.PI} // 允许垂直旋转的最大角度
+          enableZoom={true} // ズームの有効化/無効化
+          minAzimuthAngle={-Infinity} // 水平回転の最小角度を許可
+          maxAzimuthAngle={Infinity} // 水平回転の最大角度を許可
+          minPolarAngle={0} // 垂直回転の最小角度を許可
+          maxPolarAngle={Math.PI} // 垂直回転の最大角度を許可
         />
         <directionalLight position={[4, 1, 0]} intensity={5} />
-        {/* 控制自轉軸的軸心角度 x:鏡頭上下 y:沒差(因為是圓形) z:鏡頭左右 */}
+        {/* 自転軸の中心角度を制御：x:カメラ上下 y:無関係（円形のため） z:カメラ左右 */}
         <Rig
           rotation={new THREE.Euler(0.2, 0, 0.15)}
           position={new THREE.Vector3(0, -0.4, 0)}
@@ -133,16 +133,16 @@ export default function SpinCarousel() {
           <Earth />
         </Rig>
         <Environment
-          preset="dawn" // 背景預設圖片
-          background={true} // 背景是否顯示
-          backgroundBlurriness={0.55} // 背景模糊程度
-          backgroundIntensity={0.015} // 背景亮度
-          backgroundRotation={[0.5, 0.8, 0.5]} // 背景旋轉
+          preset="dawn" // 背景のプリセット画像
+          background={true} // 背景の表示/非表示
+          backgroundBlurriness={0.55} // 背景のぼかし具合
+          backgroundIntensity={0.015} // 背景の明るさ
+          backgroundRotation={[0.5, 0.8, 0.5]} // 背景の回転
         />
-        {/* 添加全局點擊處理器 */}
+        {/* グローバルクリックハンドラーを追加 */}
         <GlobalClickHandler setSelectedCardId={setSelectedCardId} />
       </Canvas>
-      {/* TODO: Loader style */}
+      {/* TODO: ローダースタイル */}
       <Loader
         barStyles={{ background: "#eeeeee", color: "#000" }}
         dataStyles={{ color: "red" }}
@@ -161,11 +161,11 @@ function Rig(props: {
   useFrame((state) => {
     if (!ref.current) return;
 
-    // y軸隨時間旋轉
+    // 時間に応じてy軸回転
     const t = state.clock.getElapsedTime();
-    ref.current.rotation.y = t / 10; // Rotate contents
+    ref.current.rotation.y = t / 10; // コンテンツを回転
     if (state.events.update) {
-      state.events.update(); // Raycasts every frame rather than on pointer-move
+      state.events.update(); // ポインター移動ではなく毎フレームレイキャスト
     }
   });
   return <group ref={ref} {...props} />;
@@ -232,15 +232,15 @@ function Card({
   children?: React.ReactNode | undefined;
 }) {
   const ref = useRef<THREE.Mesh>(null);
-  // 讓游標在 hover 時顯示 pointer 指標，並在 hover 結束時恢復指標
+  // ホバー時にポインタを「ポインター」に変更し、ホバー終了時にポインタを元に戻す
   const [hovered, setHovered] = useState(false);
   useCursor(hovered, "pointer", "auto");
 
   useFrame((state, delta) => {
     if (!ref.current) return;
-    // 外層容器 Image Container
+    // 外側のコンテナ Image Container
     easing.damp3(ref.current.scale, hovered ? 1.15 : 1, 0.1, delta);
-    // Container Border Radius
+    // コンテナのボーダー半径
     easing.damp(
       ref.current.material,
       "radius",
@@ -248,13 +248,13 @@ function Card({
       0.2,
       delta
     );
-    // 內層圖片 Image 2: 1(縮放倍數 scale), 0.2(動畫秒數, duration), delta
+    // 内側の画像 Image 2: 1(ズーム倍率 scale), 0.2(アニメーション秒数 duration), delta
     easing.damp(ref.current.material, "zoom", hovered ? 1.3 : 1, 0.2, delta);
   });
 
-  // click 時顯示 infoCard
+  // クリック時に infoCard を表示
   const handleDialog = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation(); // 阻止事件冒泡，避免觸發全局點擊關閉
+    e.stopPropagation(); // イベントの伝播を停止し、グローバルクリックで閉じるのを防ぐ
     setSelectedCardId(isSelected ? null : id);
   };
 
@@ -279,7 +279,7 @@ function Card({
       }}
     >
       <Image
-        name="card-image" // 用於識別點擊事件
+        name="card-image" // クリックイベントを識別するために使用
         alt="image"
         ref={ref}
         url={url}
@@ -287,7 +287,7 @@ function Card({
         side={THREE.DoubleSide}
         onClick={handleDialog}
       >
-        {/* Image 的彎曲程度 彎曲程度/x軸長度/y軸長度/多邊形水平面數/垂直方向面數 */}
+        {/* 画像の曲率 曲率/x軸長さ/y軸長さ/多角形水平方向面数/垂直方向面数 */}
         <BentPlane args={[0.08, 1, 1, 18, 1]} />
       </Image>
       {(hovered || isSelected) && (
@@ -305,8 +305,8 @@ function Card({
 }
 
 /**
- * GlobalClickHandler 組件用於處理 Canvas 內的全局點擊事件。
- * 當用戶點擊 Canvas 但未點擊到任何卡片時，會關閉所有打開的 InfoCard。
+ * GlobalClickHandler コンポーネントは Canvas 内でのグローバルクリックイベントを処理します。
+ * ユーザーが Canvas をクリックしたがカードをクリックしていない場合、すべての InfoCard を閉じます。
  */
 function GlobalClickHandler({
   setSelectedCardId,
@@ -317,12 +317,12 @@ function GlobalClickHandler({
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
-      // 獲取 Canvas 的邊界
+      // Canvas の境界を取得
       const rect = gl.domElement.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
 
-      // 將點擊位置轉換為 NDC (Normalized Device Coordinates)
+      // クリック位置を NDC (Normalized Device Coordinates) に変換
       const pointer = new THREE.Vector2(
         (x / rect.width) * 2 - 1,
         -(y / rect.height) * 2 + 1
@@ -332,24 +332,24 @@ function GlobalClickHandler({
       raycaster.setFromCamera(pointer, camera);
       const intersects = raycaster.intersectObjects(scene.children, true);
 
-      // 判斷是否點擊在任何一個名為 "card-image" 的物件上
+      // 「card-image」という名前のオブジェクトのいずれかがクリックされたかどうかを判断
       const clickedOnImage = intersects.some(
         (intersect) => intersect.object.name === "card-image"
       );
 
-      // 如果點擊的位置不是任何一張卡片，則關閉所有 InfoCard
+      // クリック位置がどのカードでもない場合、すべての InfoCard を閉じる
       if (!clickedOnImage) {
         setSelectedCardId(null);
       }
     };
 
-    // 添加點擊事件監聽器
+    // クリックイベントリスナーを追加
     gl.domElement.addEventListener("click", handleClick);
     return () => {
-      // 清理事件監聽器
+      // イベントリスナーをクリーンアップ
       gl.domElement.removeEventListener("click", handleClick);
     };
   }, [gl, scene, camera, setSelectedCardId]);
 
-  return null; // 這個組件不需要渲染任何東西
+  return null; // このコンポーネントは何もレンダリングしません
 }
