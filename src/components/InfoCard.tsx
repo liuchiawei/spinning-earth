@@ -16,6 +16,7 @@ export default function InfoCard({
   return (
     <Html
       position={isMobile ? [0, 2.2, 2.2] : [0, 2.4, 3.2]}
+      distanceFactor={5}
       className="fixed top-0 left-0  backdrop-blur-sm w-full h-full"
     >
       <CardContainer className="inter-var">
