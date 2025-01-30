@@ -1,5 +1,5 @@
-import SpinCarousel from "@/components/SpinCarousel";
+import Main from "@/components/Main";
 
 export default function App() {
-  return <SpinCarousel />;
+  return <Main />;
 }

@@ -16,93 +16,18 @@ import { easing } from "maath";
 import { BentPlane } from "./util";
 import InfoCard from "./InfoCard";
 import Earth from "./Earth";
+import { CompanyProps } from "@/lib/props";
 import { useMobile } from "@/hook/useMobile";
 
-const db: {
-  id: number;
-  title: string;
-  description: string;
-  url: string;
-}[] = [
-  {
-    id: 1,
-    title: "Apple",
-    description:
-      "直感的なデバイスとエコシステムを提供し、デジタルライフをシンプルかつ快適に。スマートフォンの普及を主導。",
-    url: "/img1_.jpg",
-  },
-  {
-    id: 2,
-    title: "Alphabet",
-    description:
-      "検索・広告・クラウド技術を通じて情報アクセスを変革。AIや自動運転技術の発展にも貢献し、日常生活やビジネスの形を再定義。",
-    url: "/img2_.jpg",
-  },
-  {
-    id: 3,
-    title: "Microsoft",
-    description:
-      "OS、クラウド、AIを通じてビジネスと個人の生産性を向上。企業や開発者向けツールの提供により、業務のデジタル化を加速。",
-    url: "/img3_.jpg",
-  },
-  {
-    id: 4,
-    title: "Open AI",
-    description:
-      "AIの進化を牽引し、自然言語処理や創造的作業の自動化を推進。人々の働き方や情報取得の方法に革新をもたらす。",
-    url: "/img4_.jpg",
-  },
-  {
-    id: 5,
-    title: "Amazon",
-    description:
-      "ECとクラウドサービスを発展させ、購買行動や物流を効率化。AI活用により、パーソナライズ化された消費体験を提供。",
-    url: "/img5_.jpg",
-  },
-  {
-    id: 6,
-    title: "Meta",
-    description:
-      "SNSとメタバース技術を活用し、デジタル上の交流や経済活動を拡張。VR・ARの普及を加速し、次世代コミュニケーションを創出。",
-    url: "/img6_.jpg",
-  },
-  {
-    id: 7,
-    title: "Tesla",
-    description:
-      "電気自動車の普及を加速し、持続可能なエネルギー社会の実現を推進。人々の移動手段やエネルギー利用の在り方を変革。",
-    url: "/img7_.jpg",
-  },
-  {
-    id: 8,
-    title: "Nvidia",
-    description:
-      "GPU技術を進化させ、AI、ゲーム、データ処理の性能を飛躍的に向上。ディープラーニングや自動運転技術の発展を支える。",
-    url: "/img8_.jpg",
-  },
-  {
-    id: 9,
-    title: "Byte Dance",
-    description:
-      "短尺動画プラットフォームを通じてコンテンツ消費を変革。AIによるレコメンド技術で、人々の情報取得やエンタメの嗜好を変える。",
-    url: "/img9_.jpg",
-  },
-  {
-    id: 10,
-    title: "Space X",
-    description:
-      "宇宙開発のコストを劇的に削減し、民間宇宙事業を拡大。火星移住計画を推進し、宇宙旅行の新たな可能性を開く。",
-    url: "/img10_.jpg",
-  },
-];
-
-export default function SpinCarousel() {
+export default function SpinCarousel({ db }: { db: CompanyProps[] }) {
   const isMobile = useMobile();
   // orbit中に他のイベントリスナーを停止する
   const [isOrbiting, setIsOrbiting] = useState(false);
   const handleStart = () => setIsOrbiting(true);
   const handleEnd = () => setIsOrbiting(false);
 
+  const [hoveredCardLocation, sethoveredCardLocation] = useState<string | null>(null);
+  const handleCardHovered = (location: string | null) => sethoveredCardLocation(location);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   return (
@@ -122,15 +47,20 @@ export default function SpinCarousel() {
         <Rig
           rotation={new THREE.Euler(0.2, 0, 0.15)}
           position={new THREE.Vector3(0, -0.4, 0)}
+          hoveredCardLocation={hoveredCardLocation}
+          handleCardHovered={handleCardHovered}
         >
           <Carousel
+            db={db}
             radius={isMobile ? 2.2 : 3.2}
             count={db.length}
             isOrbiting={isOrbiting}
             selectedCardId={selectedCardId}
             setSelectedCardId={setSelectedCardId}
+            hoveredCardLocation={hoveredCardLocation}
+            handleCardHovered={handleCardHovered}
           />
-          <Earth />
+          <Earth companies={db} selectedCardId={selectedCardId} />
         </Rig>
         <Environment
           preset="dawn" // 背景のプリセット画像
@@ -155,6 +85,8 @@ function Rig(props: {
   children: React.ReactNode;
   rotation: THREE.Euler;
   position: THREE.Vector3;
+  hoveredCardLocation: string | null;
+  handleCardHovered: (location: string) => void;
 }) {
   const ref = useRef<THREE.Group>(null);
 
@@ -172,17 +104,23 @@ function Rig(props: {
 }
 
 function Carousel({
+  db,
   radius,
   count,
   isOrbiting,
   selectedCardId,
   setSelectedCardId,
+  hoveredCardLocation,
+  handleCardHovered,
 }: {
+  db: CompanyProps[];
   radius: number;
   count: number;
   isOrbiting: boolean;
   selectedCardId: number | null;
   setSelectedCardId: (id: number | null) => void;
+  hoveredCardLocation: string | null;
+  handleCardHovered: (location: string | null) => void;
 }) {
   return db.map((item) => (
     <Card
@@ -190,10 +128,13 @@ function Carousel({
       key={item.id}
       url={item.url}
       title={item.title}
+      location={item.location}
       description={item.description}
       isOrbiting={isOrbiting}
       isSelected={selectedCardId === item.id}
       setSelectedCardId={setSelectedCardId}
+      hoveredCardLocation={hoveredCardLocation}
+      handleCardHovered={handleCardHovered}
       position={
         new THREE.Vector3(
           Math.sin((item.id / count) * Math.PI * 2) * radius,
@@ -212,23 +153,29 @@ function Card({
   id,
   url,
   title,
+  location,
   description,
   position,
   rotation,
   isOrbiting,
   isSelected,
   setSelectedCardId,
+  hoveredCardLocation,
+  handleCardHovered,
   ...props
 }: {
   id: number;
   url: string;
   title: string;
+  location: string;
   description: string;
   position: THREE.Vector3;
   rotation: THREE.Euler;
   isOrbiting: boolean;
   isSelected: boolean;
   setSelectedCardId: (id: number | null) => void;
+  hoveredCardLocation: string | null;
+  handleCardHovered: (location: string | null) => void;
   children?: React.ReactNode | undefined;
 }) {
   const ref = useRef<THREE.Mesh>(null);
@@ -265,17 +212,15 @@ function Card({
       {...props}
       onPointerOver={(e) => {
         if (isOrbiting || isSelected) return;
-        if (!isOrbiting) {
-          e.stopPropagation();
-          setHovered(true);
-        }
+        e.stopPropagation();
+        handleCardHovered(location);
+        setHovered(true);
       }}
       onPointerOut={(e) => {
         if (isOrbiting) return;
-        if (!isOrbiting) {
-          e.stopPropagation();
-          setHovered(false);
-        }
+        e.stopPropagation();
+        handleCardHovered(null);
+        setHovered(false);
       }}
     >
       <Image

@@ -1,13 +1,15 @@
 import React from "react";
-import { Canvas } from "@react-three/fiber";
-import { Html, OrbitControls } from "@react-three/drei";
-import * as THREE from "three";
+import { Html, useCursor } from "@react-three/drei";
+import { MapPin } from "lucide-react";
 
 interface MarkerProps {
+  id: number;
   lat: number;
   lng: number;
   radius: number;
   label: string;
+  title: string;
+  selectedCardId: number | null;
 }
 
 interface CartesianCoords {
@@ -29,9 +31,18 @@ function latLngToCartesian(
   return { x, y, z };
 }
 
-export default function MapMarker({ lat, lng, radius, label }: MarkerProps) {
+export default function MapMarker({
+  lat,
+  lng,
+  radius,
+  label,
+  id,
+  title,
+  selectedCardId,
+}: MarkerProps) {
   const { x, y, z } = latLngToCartesian(lat, lng, radius);
   const [hovered, setHovered] = React.useState(false);
+  useCursor(hovered, "pointer", "auto");
 
   return (
     <mesh
@@ -39,21 +50,16 @@ export default function MapMarker({ lat, lng, radius, label }: MarkerProps) {
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
     >
-      <sphereGeometry args={[0.02, 32, 32]} />
-      <meshStandardMaterial color={hovered ? "hotpink" : "red"} />
-      {hovered && (
+      <sphereGeometry args={[0.01, 14, 14]} />
+      {(hovered || selectedCardId === id) && (
         <Html>
-          <div
-            style={{
-              backgroundColor: "white",
-              padding: "5px",
-              borderRadius: "5px",
-            }}
-          >
-            {label}
+          <div className="flex flex-col items-center justify-center gap-1 text-white text-center z-0 relative text-nowrap">
+            <MapPin className="w-4 h-4" />
+            <h1 className="text-lg font-bold">{title}</h1>
+            <h3 className="text-sm w-full">{label}</h3>
           </div>
         </Html>
       )}
     </mesh>
   );
-};
+}
