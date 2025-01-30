@@ -15,7 +15,7 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "ポートフォリオ",
+  title: "世界を揺るがす企業",
   description: "ポートフォリオ",
 };
 
