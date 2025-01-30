@@ -93,16 +93,22 @@ function Rig(props: {
   const ref = useRef<THREE.Group>(null);
 
   useFrame((state, delta) => {
+    // 選択されているカードがある場合は回転を停止
     if (!ref.current) return;
+
     // 時間を取得
     const t = state.clock.getElapsedTime();
+
+    // const pausedTime = 0;
+
+    // カードを出った場合は今の位置を保持
     if (props.selectedCardId) {
-      // 今の位置を保持
-      ref.current.rotation.y = t % 10;
+      ref.current.rotation.y = 0;
+    // カードを出していない場合は時間に応じてy軸回転
     } else {
-      // 時間に応じてy軸回転
       ref.current.rotation.y = t / 10; // コンテンツを回転
     }
+
     if (state.events.update) {
       state.events.update(); // ポインター移動ではなく毎フレームレイキャスト
     }
