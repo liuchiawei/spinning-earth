@@ -13,20 +13,13 @@ export default function InfoCard({
 }) {
   const isMobile = useMobile();
   return (
-    <div
-      className={cn(
-        "absolute z-50",
-        isMobile
-          ? "left-0 top-0 bg-black/50 w-full h-full"
-          : "right-4 bg-transparent top-1/2 -translate-y-1/2"
-      )}
-    >
+    <div className="absolute z-50 bg-black/50 w-full h-full left-0 top-0">
       <div
         className={cn(
-          "flex flex-col items-center justify-center rounded-3xl bg-gray-50/20 gap-2 border border-white/70 text-white p-6 gap-6",
+          "flex flex-col items-center justify-center rounded-3xl bg-gray-50/20 gap-2 border border-white/70 text-white p-6 gap-6 top-1/2 -translate-y-1/2 absolute",
           isMobile
-            ? "w-[297px] h-[420px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 absolute"
-            : "w-[420px] h-[594px]"
+            ? "w-[297px] h-[420px] left-1/2 -translate-x-1/2 "
+            : "w-[420px] h-[594px] right-8"
         )}
       >
         <div>
