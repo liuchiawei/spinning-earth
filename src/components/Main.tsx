@@ -9,10 +9,21 @@ export default function Main() {
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   return (
-    <main className="w-full h-full">
-      <SpinCarousel db={db} selectedCardId={selectedCardId} setSelectedCardId={setSelectedCardId} />
-      {/* TODO: 從Canvas中分離InfoCard */}
-      {/* <InfoCard /> */}
+    <main className="w-screen h-screen relative">
+      {selectedCardId && (
+        <InfoCard
+          title={db[selectedCardId - 1].title}
+          description={db[selectedCardId - 1].description}
+          url={db[selectedCardId - 1].url}
+        />
+      )}
+      <div className="w-full h-full">
+        <SpinCarousel
+          db={db}
+          selectedCardId={selectedCardId}
+          setSelectedCardId={setSelectedCardId}
+        />
+      </div>
     </main>
   );
 }

@@ -14,7 +14,6 @@ import {
 } from "@react-three/drei";
 import { easing } from "maath";
 import { BentPlane } from "./util";
-import InfoCard from "./InfoCard";
 import Earth from "./Earth";
 import { CompanyProps } from "@/lib/props";
 import { useMobile } from "@/hook/useMobile";
@@ -253,9 +252,6 @@ function Card({
             {title}
           </Text>
         </Billboard>
-      )}
-      {isSelected && (
-        <InfoCard title={title} description={description} url={url} />
       )}
     </group>
   );

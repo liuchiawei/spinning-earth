@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="ja">
       <body className={`${roboto.variable} ${notoSansJP.variable} antialiased bg-gray-900`}>
         <div className="h-screen w-full relative pointer-events-none z-0 overflow-hidden">
-          <div className="w-screen absolute top-8 left-1/2 md:left-8 -translate-x-1/2 md:translate-x-0 gap-2 flex flex-col justify-center items-center md:items-start z-10 text-center md:text-left">
+          <div className="absolute top-8 left-1/2 md:left-8 -translate-x-1/2 md:translate-x-0 gap-2 flex flex-col justify-center items-center md:items-start z-10 text-center md:text-left">
             <h1 className="text-3xl md:text-6xl font-bold text-white">
               世界を揺るがす企業
             </h1>
