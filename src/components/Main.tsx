@@ -1,13 +1,19 @@
+"use client";
+
 import SpinCarousel from "@/components/SpinCarousel";
 import InfoCard from "@/components/InfoCard";
 import { CompanyProps } from "@/lib/props";
+import { useState } from "react";
+
 export default function Main() {
+  const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
+
   return (
-    <div className="w-full h-full">
-      <SpinCarousel db={db} />
+    <main className="w-full h-full">
+      <SpinCarousel db={db} selectedCardId={selectedCardId} setSelectedCardId={setSelectedCardId} />
       {/* TODO: 從Canvas中分離InfoCard */}
       {/* <InfoCard /> */}
-    </div>
+    </main>
   );
 }
 

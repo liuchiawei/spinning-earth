@@ -19,7 +19,7 @@ import Earth from "./Earth";
 import { CompanyProps } from "@/lib/props";
 import { useMobile } from "@/hook/useMobile";
 
-export default function SpinCarousel({ db }: { db: CompanyProps[] }) {
+export default function SpinCarousel({ db, selectedCardId, setSelectedCardId }: { db: CompanyProps[], selectedCardId: number | null, setSelectedCardId: (id: number | null) => void }) {
   const isMobile = useMobile();
   // orbit中に他のイベントリスナーを停止する
   const [isOrbiting, setIsOrbiting] = useState(false);
@@ -28,7 +28,6 @@ export default function SpinCarousel({ db }: { db: CompanyProps[] }) {
 
   const [hoveredCardLocation, sethoveredCardLocation] = useState<string | null>(null);
   const handleCardHovered = (location: string | null) => sethoveredCardLocation(location);
-  const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   return (
     <>
