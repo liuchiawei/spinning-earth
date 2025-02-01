@@ -31,7 +31,7 @@ export default function Earth({
         <MapMarker
           key={index}
           {...company}
-          radius={1.02}
+          radius={1}
           selectedCardId={selectedCardId}
         />
       ))}

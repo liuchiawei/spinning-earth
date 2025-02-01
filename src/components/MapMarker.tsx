@@ -52,7 +52,7 @@ export default function MapMarker({
     >
       <sphereGeometry args={[0.01, 14, 14]} />
       {(hovered || selectedCardId === id) && (
-        <Html>
+        <Html >
           <div className="flex flex-col items-center justify-center gap-1 text-white text-center z-0 relative text-nowrap">
             <MapPin className="w-4 h-4" />
             <h1 className="text-lg font-bold">{title}</h1>
