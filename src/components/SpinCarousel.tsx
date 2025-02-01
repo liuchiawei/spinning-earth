@@ -1,7 +1,7 @@
 "use client";
 
 import * as THREE from "three";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   Image,
@@ -18,15 +18,28 @@ import Earth from "./Earth";
 import { CompanyProps } from "@/lib/props";
 import { useMobile } from "@/hook/useMobile";
 
-export default function SpinCarousel({ db, selectedCardId, setSelectedCardId }: { db: CompanyProps[], selectedCardId: number | null, setSelectedCardId: (id: number | null) => void }) {
+export default function SpinCarousel({
+  db,
+  selectedCardId,
+  setSelectedCardId,
+}: {
+  db: CompanyProps[];
+  selectedCardId: number | null;
+  setSelectedCardId: (id: number | null) => void;
+}) {
   const isMobile = useMobile();
   // orbit中に他のイベントリスナーを停止する
   const [isOrbiting, setIsOrbiting] = useState(false);
   const handleStart = () => setIsOrbiting(true);
   const handleEnd = () => setIsOrbiting(false);
 
-  const [hoveredCardLocation, sethoveredCardLocation] = useState<string | null>(null);
-  const handleCardHovered = (location: string | null) => sethoveredCardLocation(location);
+  const [hoveredCardLocation, sethoveredCardLocation] = useState<string | null>(
+    null
+  );
+  const handleCardHovered = (location: string | null) =>
+    sethoveredCardLocation(location);
+
+  const initialRotation = useMemo(() => new THREE.Euler(0.2, 0, 0.15), []);
 
   return (
     <>
@@ -44,7 +57,7 @@ export default function SpinCarousel({ db, selectedCardId, setSelectedCardId }: 
         {/* 自転軸の中心角度を制御：x:カメラ上下 y:無関係（円形のため） z:カメラ左右 */}
         <Rig
           selectedCardId={selectedCardId}
-          rotation={new THREE.Euler(0.2, 0, 0.15)}
+          rotation={initialRotation}
           position={new THREE.Vector3(0, -0.4, 0)}
           hoveredCardLocation={hoveredCardLocation}
           handleCardHovered={handleCardHovered}
@@ -80,39 +93,54 @@ export default function SpinCarousel({ db, selectedCardId, setSelectedCardId }: 
   );
 }
 
-function Rig(props: {
+type RigProps = {
   children: React.ReactNode;
   rotation: THREE.Euler;
   position: THREE.Vector3;
   hoveredCardLocation: string | null;
   selectedCardId: number | null;
   handleCardHovered: (location: string) => void;
-}) {
+};
+
+const Rig: React.FC<RigProps> = ({
+  children,
+  rotation,
+  position,
+  hoveredCardLocation,
+  selectedCardId,
+  handleCardHovered,
+}) => {
   const ref = useRef<THREE.Group>(null);
+
+  // 初始時將群組的旋轉角度設為傳入的 rotation
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.rotation.copy(rotation);
+    }
+  }, [rotation]);
 
   useFrame((state, delta) => {
     // 選択されているカードがある場合は回転を停止
     if (!ref.current) return;
 
-    // 時間を取得
-    const t = state.clock.getElapsedTime();
+    // 當 selectedCardId 為 null 時，代表沒有暫停，否則暫停中
+    const isPaused = selectedCardId !== null;
 
-    // const pausedTime = 0;
-
-    // カードを出った場合は今の位置を保持
-    if (props.selectedCardId) {
-      ref.current.rotation.y = 0;
-    // カードを出していない場合は時間に応じてy軸回転
-    } else {
-      ref.current.rotation.y = t / 10; // コンテンツを回転
+    // 如果目前不在暫停狀態，就持續根據 delta 時間更新旋轉角度
+    if (!isPaused) {
+      ref.current.rotation.y += delta / 10;
     }
 
     if (state.events.update) {
       state.events.update(); // ポインター移動ではなく毎フレームレイキャスト
     }
   });
-  return <group ref={ref} {...props} />;
-}
+  return (
+    <group ref={ref} position={position}>
+      {children}
+    </group>
+  );
+};
 
 function Carousel({
   db,
