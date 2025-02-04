@@ -1,27 +1,47 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useMobile } from "@/hook/useMobile";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 export default function InfoCard({
+  id,
   title,
   description,
   url,
+  selectedCardId,
+  setSelectedCardId,
 }: {
+  id: number;
   title: string;
   description: string;
   url: string;
+  selectedCardId: number | null;
+  setSelectedCardId: (id: number | null) => void;
 }) {
   const isMobile = useMobile();
+  const handleClose = () => {
+    if (selectedCardId) {
+      setSelectedCardId(null);
+    }
+  };
   return (
-    <div className="absolute z-50 bg-black/50 w-full h-full left-0 top-0">
+    <div className="absolute z-50 bg-black/70 w-full h-full left-0 top-0 cursor-default">
       <div
         className={cn(
-          "flex flex-col items-center justify-center rounded-3xl bg-gray-50/20 gap-2 border border-white/70 text-white p-6 gap-6 top-1/2 -translate-y-1/2 absolute",
+          "flex flex-col items-center justify-between rounded-3xl bg-gray-50/20 backdrop-blur-sm gap-2 border border-white/70 text-white p-8 gap-6 top-1/2 -translate-y-1/2 absolute",
           isMobile
-            ? "w-[297px] h-[420px] left-1/2 -translate-x-1/2 "
+            ? "w-4/5 h-4/5 left-1/2 -translate-x-1/2 "
             : "w-[420px] h-[594px] right-8"
         )}
       >
+        <Button
+          className="absolute top-3 left-3 z-10 text-xl text-gray-100 rounded-full w-8 h-8 cursor-pointer"
+          onClick={handleClose}
+        >
+          <X />
+        </Button>
         <div>
           <h1 className="text-2xl md:text-5xl font-bold">{title}</h1>
         </div>
@@ -36,6 +56,13 @@ export default function InfoCard({
         </div>
         <div>
           <h1>{description}</h1>
+        </div>
+        <div>
+          <Link href={`/company/${id}`}>
+            <Button className="rounded-full px-4 py-2 cursor-pointer">
+              もっと見る
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

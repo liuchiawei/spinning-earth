@@ -1,6 +1,7 @@
 import { useTexture } from "@react-three/drei";
 import MapMarker from "./MapMarker";
 import { CompanyProps } from "@/lib/props";
+import R3fGlobe from "r3f-globe";
 
 // const markers = [
 //   { lat: 37.323, lng: -122.0322, label: "Cupertino", id: 1, title: "Apple"},
@@ -22,7 +23,7 @@ export default function Earth({
   companies: CompanyProps[];
   selectedCardId: number | null;
 }) {
-  const texture = useTexture("/material/earth-blue-marble.jpg");
+  const texture = useTexture("/images/material/earth-blue-marble.jpg");
   return (
     <mesh>
       <sphereGeometry args={[1, 32, 32]} />

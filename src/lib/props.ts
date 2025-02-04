@@ -8,3 +8,21 @@ export interface CompanyProps {
   lng: number;
   label: string;
 }
+
+export interface ProductDataProps {
+  productName: string;
+  productImage: string;
+  productDescription: string;
+}
+
+export interface LineChartDataProps {
+  time: string;
+  value: number;
+}
+
+export interface TimelineProps {
+  year: string;
+  content: string;
+}
+
+
