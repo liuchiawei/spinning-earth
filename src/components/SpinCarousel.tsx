@@ -15,7 +15,7 @@ import {
 import { easing } from "maath";
 import { BentPlane } from "./util";
 import Earth from "./Earth";
-import { CompanyProps } from "@/lib/props";
+import { ListProps } from "@/lib/props";
 import { useMobile } from "@/hook/useMobile";
 
 export default function SpinCarousel({
@@ -23,7 +23,7 @@ export default function SpinCarousel({
   selectedCardId,
   setSelectedCardId,
 }: {
-  db: CompanyProps[];
+  db: ListProps[];
   selectedCardId: number | null;
   setSelectedCardId: (id: number | null) => void;
 }) {
@@ -152,7 +152,7 @@ function Carousel({
   hoveredCardLocation,
   handleCardHovered,
 }: {
-  db: CompanyProps[];
+  db: ListProps[];
   radius: number;
   count: number;
   isOrbiting: boolean;
@@ -166,7 +166,7 @@ function Carousel({
       id={item.id}
       key={item.id}
       url={item.url}
-      title={item.title}
+      name={item.name}
       location={item.location}
       description={item.description}
       isOrbiting={isOrbiting}
@@ -191,7 +191,7 @@ function Carousel({
 function Card({
   id,
   url,
-  title,
+  name,
   location,
   description,
   position,
@@ -205,7 +205,7 @@ function Card({
 }: {
   id: number;
   url: string;
-  title: string;
+  name: string;
   location: string;
   description: string;
   position: THREE.Vector3;
@@ -277,7 +277,7 @@ function Card({
       {(hovered || isSelected) && (
         <Billboard position={[0, 0.8, 0.1]}>
           <Text fontSize={0.1} anchorX="center" anchorY="middle">
-            {title}
+            {name}
           </Text>
         </Billboard>
       )}

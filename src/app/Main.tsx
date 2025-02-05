@@ -2,7 +2,7 @@
 
 import SpinCarousel from "@/components/SpinCarousel";
 import InfoCard from "@/components/InfoCard";
-import { CompanyProps } from "@/lib/props";
+import { ListProps } from "@/lib/props";
 import { useState } from "react";
 
 export default function Main() {
@@ -20,7 +20,7 @@ export default function Main() {
       {selectedCardId && (
         <InfoCard
           id={db[selectedCardId - 1].id}
-          title={db[selectedCardId - 1].title}
+          name={db[selectedCardId - 1].name}
           description={db[selectedCardId - 1].description}
           url={db[selectedCardId - 1].url}
           selectedCardId={selectedCardId}
@@ -31,10 +31,10 @@ export default function Main() {
   );
 }
 
-const db: CompanyProps[] = [
+const db: ListProps[] = [
   {
     id: 1,
-    title: "Apple",
+    name: "Apple",
     description:
       "直感的なデバイスとエコシステムを提供し、デジタルライフをシンプルかつ快適に。スマートフォンの普及を主導。",
     url: "/images/img1_.jpg",
@@ -45,7 +45,7 @@ const db: CompanyProps[] = [
   },
   {
     id: 2,
-    title: "Alphabet",
+    name: "Alphabet",
     description:
       "検索・広告・クラウド技術を通じて情報アクセスを変革。AIや自動運転技術の発展にも貢献し、日常生活やビジネスの形を再定義。",
     url: "/images/img2_.jpg",
@@ -56,7 +56,7 @@ const db: CompanyProps[] = [
   },
   {
     id: 3,
-    title: "Microsoft",
+    name: "Microsoft",
     description:
       "OS、クラウド、AIを通じてビジネスと個人の生産性を向上。企業や開発者向けツールの提供により、業務のデジタル化を加速。",
     url: "/images/img3_.jpg",
@@ -67,7 +67,7 @@ const db: CompanyProps[] = [
   },
   {
     id: 4,
-    title: "Open AI",
+    name: "Open AI",
     description:
       "AIの進化を牽引し、自然言語処理や創造的作業の自動化を推進。人々の働き方や情報取得の方法に革新をもたらす。",
     url: "/images/img4_.jpg",
@@ -78,7 +78,7 @@ const db: CompanyProps[] = [
   },
   {
     id: 5,
-    title: "Amazon",
+    name: "Amazon",
     description:
       "ECとクラウドサービスを発展させ、購買行動や物流を効率化。AI活用により、パーソナライズ化された消費体験を提供。",
     url: "/images/img5_.jpg",
@@ -89,7 +89,7 @@ const db: CompanyProps[] = [
   },
   {
     id: 6,
-    title: "Meta",
+    name: "Meta",
     description:
       "SNSとメタバース技術を活用し、デジタル上の交流や経済活動を拡張。VR・ARの普及を加速し、次世代コミュニケーションを創出。",
     url: "/images/img6_.jpg",
@@ -100,7 +100,7 @@ const db: CompanyProps[] = [
   },
   {
     id: 7,
-    title: "Tesla",
+    name: "Tesla",
     description:
       "電気自動車の普及を加速し、持続可能なエネルギー社会の実現を推進。人々の移動手段やエネルギー利用の在り方を変革。",
     url: "/images/img7_.jpg",
@@ -111,7 +111,7 @@ const db: CompanyProps[] = [
   },
   {
     id: 8,
-    title: "Nvidia",
+    name: "Nvidia",
     description:
       "GPU技術を進化させ、AI、ゲーム、データ処理の性能を飛躍的に向上。ディープラーニングや自動運転技術の発展を支える。",
     url: "/images/img8_.jpg",
@@ -122,7 +122,7 @@ const db: CompanyProps[] = [
   },
   {
     id: 9,
-    title: "Byte Dance",
+    name: "Byte Dance",
     description:
       "短尺動画プラットフォームを通じてコンテンツ消費を変革。AIによるレコメンド技術で、人々の情報取得やエンタメの嗜好を変える。",
     url: "/images/img9_.jpg",
@@ -133,7 +133,7 @@ const db: CompanyProps[] = [
   },
   {
     id: 10,
-    title: "Space X",
+    name: "Space X",
     description:
       "宇宙開発のコストを劇的に削減し、民間宇宙事業を拡大。火星移住計画を推進し、宇宙旅行の新たな可能性を開く。",
     url: "/images/img10_.jpg",

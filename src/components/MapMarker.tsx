@@ -8,7 +8,7 @@ interface MarkerProps {
   lng: number;
   radius: number;
   label: string;
-  title: string;
+  name: string;
   selectedCardId: number | null;
 }
 
@@ -37,7 +37,7 @@ export default function MapMarker({
   radius,
   label,
   id,
-  title,
+  name,
   selectedCardId,
 }: MarkerProps) {
   const { x, y, z } = latLngToCartesian(lat, lng, radius);
@@ -55,7 +55,7 @@ export default function MapMarker({
         <Html >
           <div className="flex flex-col items-center justify-center gap-1 text-white text-center z-0 relative text-nowrap">
             <MapPin className="w-4 h-4" />
-            <h1 className="text-lg font-bold">{title}</h1>
+            <h1 className="text-lg font-bold">{name}</h1>
             <h3 className="text-sm w-full">{label}</h3>
           </div>
         </Html>

@@ -1,6 +1,6 @@
-export interface CompanyProps {
+export interface ListProps {
   id: number;
-  title: string;
+  name: string;
   description: string;
   url: string;
   location: string;
@@ -22,7 +22,29 @@ export interface LineChartDataProps {
 
 export interface TimelineProps {
   year: string;
+  title: string;
   content: string;
 }
 
-
+export interface CompanyProps {
+  id: number;
+  name: string;
+  description: string;
+  about: string;
+  url: string;
+  location: string;
+  lat: number;
+  lng: number;
+  label: string;
+  productName: string;
+  productImage: string;
+  productDescription: string;
+  radarchart: number[];
+  areachart: number[];
+  googletrend: number[];
+  timeline: {
+    year: number;
+    title: string;
+    content: string;
+  }[];
+}

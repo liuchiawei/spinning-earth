@@ -7,14 +7,14 @@ import { X } from "lucide-react";
 
 export default function InfoCard({
   id,
-  title,
+  name,
   description,
   url,
   selectedCardId,
   setSelectedCardId,
 }: {
   id: number;
-  title: string;
+  name: string;
   description: string;
   url: string;
   selectedCardId: number | null;
@@ -43,7 +43,7 @@ export default function InfoCard({
           <X />
         </Button>
         <div>
-          <h1 className="text-2xl md:text-5xl font-bold">{title}</h1>
+          <h1 className="text-2xl md:text-5xl font-bold">{name}</h1>
         </div>
         <div>
           <Image

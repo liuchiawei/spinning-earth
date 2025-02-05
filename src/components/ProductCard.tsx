@@ -15,7 +15,7 @@ export default function ProductCard({
   data,
 }: {
   className?: string;
-  data: ProductDataProps[];
+  data: ProductDataProps;
 }) {
   return (
     <Card className={cn(className, "flex flex-col items-center px-4 pb-4")}>
@@ -25,15 +25,16 @@ export default function ProductCard({
       </CardHeader>
       <CardContent className="flex flex-col justify-center items-center gap-2">
         <Image
-          src={data[0].productImage}
-          alt={data[0].productName}
+          src={data.productImage}
+          alt={data.productName}
           width={300}
           height={300}
+
         />
-        <h6 className="text-center text-sm">{data[0].productName}</h6>
+        <h6 className="text-center text-sm">{data.productName}</h6>
       </CardContent>
       <CardFooter>
-        <p className="text-justify">{data[0].productDescription}</p>
+        <p className="text-justify">{data.productDescription}</p>
       </CardFooter>
     </Card>
   );

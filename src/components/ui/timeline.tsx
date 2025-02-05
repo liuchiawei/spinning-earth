@@ -42,7 +42,7 @@ export const Timeline = ({ data }: { data: TimelineProps[] }) => {
                 {item.year}
               </h3>
               <h3 className="text-2xl font-bold text-slate-700 dark:text-slate-300 mb-4">
-                {item.year}
+                {item.title}
               </h3>
               <p className="text-slate-400 dark:text-slate-500 text-justify text-md pb-8">
                 {item.content}
