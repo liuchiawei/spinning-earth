@@ -23,13 +23,12 @@ export default function ProductCard({
         <CardTitle>主な製品・サービス</CardTitle>
         <CardDescription>主な製品・サービス</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col justify-center items-center gap-2">
+      <CardContent className="flex flex-col justify-center items-center gap-4">
         <Image
           src={data.productImage}
           alt={data.productName}
-          width={300}
-          height={300}
-
+          width={210}
+          height={210}
         />
         <h6 className="text-center text-sm">{data.productName}</h6>
       </CardContent>

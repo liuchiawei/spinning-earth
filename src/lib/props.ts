@@ -28,6 +28,7 @@ export interface TimelineProps {
 
 export interface CompanyProps {
   id: number;
+  stringId: string;
   name: string;
   description: string;
   about: string;
