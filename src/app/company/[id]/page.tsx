@@ -70,7 +70,7 @@ export default async function Page({ params }: CompanyPageProps) {
           style={{ backgroundImage: `url(/images/img${companyId}_.jpg)` }}
         >
           <div className="absolute w-full h-full bg-black/50 z-0" />
-          <div className="size-40 flex items-center justify-center bg-white rounded-full z-10">
+          <div className="size-40 flex items-center justify-center bg-white rounded-full z-10 overflow-hidden">
             <Image
               src={`/images/logos/logo_${company.stringId}.svg`}
               alt={company.name}
