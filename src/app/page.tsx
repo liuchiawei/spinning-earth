@@ -11,7 +11,7 @@ export default function App() {
           未来を創る、今ここに。
         </h2>
       </div>
-      <div className="absolute bottom-8 left-8 z-10 text-sm md:text-xl text-gray-100">
+      <div className="absolute bottom-8 left-8 z-10 text-sm md:text-xl *:text-sm text-gray-100 p-6 rounded-xl bg-slate-500/20">
         <h3>ドラッグして画面を回転</h3>
         <h3>スクロールして画面を拡大</h3>
       </div>
