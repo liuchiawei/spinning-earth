@@ -15,8 +15,9 @@ import { ProductDataProps, TimelineProps, CompanyProps } from "@/lib/props";
 import NextPageBtn from "@/components/NextPageBtn";
 
 interface CompanyPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
+
 
 /**
  * 全ての会社データを取得関数
@@ -32,8 +33,9 @@ async function getData() {
 }
 
 export default async function Page({ params }: CompanyPageProps) {
+  const { id } = await params;
   // パラメーターから会社IDを取得、数値化
-  const companyId = parseInt(params.id, 10);
+  const companyId = parseInt(id, 10);
   // companyIdが数値でない場合は404
   if (isNaN(companyId)) return notFound();
   // すべての会社データをjson形式で取得
