@@ -2,7 +2,7 @@ import Main from "@/app/Main";
 
 export default function App() {
   return (
-    <div className="h-screen w-full relative overflow-hidden">
+    <div className="h-screen w-full relative overflow-hidden bg-black">
       <div className="absolute top-8 left-1/2 md:left-8 -translate-x-1/2 md:translate-x-0 gap-2 flex flex-col justify-center items-center md:items-start z-10 text-center md:text-left">
         <h1 className="text-3xl md:text-6xl font-bold text-white">
           世界を揺るがす企業
