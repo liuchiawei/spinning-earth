@@ -9,7 +9,7 @@ export default function Main() {
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   return (
-    <main className="w-screen h-screen relative">
+    <main className="w-screen h-screen relative" role="main">
       <div className="w-full h-full relative z-0">
         <SpinCarousel
           db={db}

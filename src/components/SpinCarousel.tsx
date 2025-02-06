@@ -93,6 +93,28 @@ export default function SpinCarousel({
   );
 }
 
+/**
+ * CameraIntro Component
+ * 
+ * This component gently animates the camera from a far position to a closer one on page load.
+ */
+function CameraIntro() {
+  const { camera } = useThree();
+  const finalPosition = new THREE.Vector3(0, 0, 5);
+
+  useEffect(() => {
+    // On mount, we set the camera's starting position (farther away)
+    camera.position.set(0, 0, 10);
+  }, [camera]);
+
+  useFrame((state, delta) => {
+    // Using maath's easing.damp3 to smoothly animate the camera.position toward the final position.
+    easing.damp3(camera.position, finalPosition, 0.1, delta);
+  });
+
+  return null;
+}
+
 type RigProps = {
   children: React.ReactNode;
   rotation: THREE.Euler;
