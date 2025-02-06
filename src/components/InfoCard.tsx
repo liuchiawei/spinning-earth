@@ -2,8 +2,9 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useMobile } from "@/hook/useMobile";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 export default function InfoCard({
   id,
@@ -26,9 +27,26 @@ export default function InfoCard({
       setSelectedCardId(null);
     }
   };
+  // カードアニメーション
+  const variants = {
+    hidden: { x: "100vw", rotate: 30 },
+    visible: {
+      x: 0,
+      rotate: 0,
+      transition: {
+        type: "spring",
+        stiffness: 250,
+        damping: 15,
+      },
+    },
+  };
   return (
     <div className="absolute z-50 bg-black/70 w-full h-full left-0 top-0 cursor-default">
-      <div
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        variants={variants}
         className={cn(
           "flex flex-col items-center justify-between rounded-3xl bg-gray-50/20 backdrop-blur-sm gap-2 border border-white/70 text-white p-8 gap-6 top-1/2 -translate-y-1/2 absolute",
           isMobile
@@ -37,7 +55,7 @@ export default function InfoCard({
         )}
       >
         <Button
-          className="absolute top-3 left-3 z-10 text-xl text-gray-100 rounded-full w-8 h-8 cursor-pointer"
+          className="absolute top-3 left-3 z-10 text-xl text-gray-100 rounded-full w-8 h-8 cursor-pointer bg-black/50 hover:bg-accent"
           onClick={handleClose}
         >
           <X />
@@ -58,13 +76,11 @@ export default function InfoCard({
           <h1>{description}</h1>
         </div>
         <div>
-          <Link href={`/company/${id}`}>
-            <Button className="rounded-full px-4 py-2 cursor-pointer">
-              もっと見る
-            </Button>
-          </Link>
+          <Button className="rounded-full px-4 py-2 cursor-pointer bg-black/50 hover:bg-accent">
+            <Link href={`/company/${id}`}>もっと見る</Link>
+          </Button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

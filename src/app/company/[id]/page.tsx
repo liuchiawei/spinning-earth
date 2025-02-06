@@ -6,7 +6,6 @@ import RadarChartCard from "@/components/RadarChartCard";
 import LineChartCard from "@/components/LineChartCard";
 import AreaChartCard from "@/components/AreaChartCard";
 import ProductCard from "@/components/ProductCard";
-
 import BackToTop from "@/components/BackToTop";
 import BackToHome from "@/components/BackToHome";
 import Footer from "@/components/footer";
@@ -17,7 +16,6 @@ import NextPageBtn from "@/components/NextPageBtn";
 interface CompanyPageProps {
   params: Promise<{ id: string }>;
 }
-
 
 /**
  * 全ての会社データを取得関数

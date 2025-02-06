@@ -10,7 +10,7 @@ export default function NextPageBtn({
   prevCompanyId: number;
 }) {
   return (
-    <div className="w-full h-40 flex justify-between items-center p-4 gap-4">
+    <div className="w-full h-20 flex justify-between items-center p-4 gap-4">
       <Button asChild variant="ghost" className="w-full h-full">
         <Link
           href={`/company/${prevCompanyId}`}

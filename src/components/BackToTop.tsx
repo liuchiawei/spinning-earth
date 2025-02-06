@@ -3,6 +3,12 @@
 import { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function BackToTop() {
   const [isVisible, setIsVisible] = useState(false);
@@ -28,14 +34,23 @@ export default function BackToTop() {
   };
 
   return (
-    <Button
-      className={`${
-        isVisible ? "translate-y-0" : "translate-y-30"
-      } fixed bottom-8 right-8 cursor-pointer transition-all duration-300 z-50`}
-      onClick={handleClick}
-      variant="default"
-    >
-      <ArrowUp className="w-4 h-4" />
-    </Button>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            className={`${
+              isVisible ? "translate-y-0" : "translate-y-30"
+            } fixed bottom-8 right-8 cursor-pointer transition-all duration-300 z-50`}
+            onClick={handleClick}
+            variant="default"
+          >
+            <ArrowUp className="w-4 h-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>ページトップへ戻る</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
