@@ -76,7 +76,7 @@ export default function InfoCard({
           <h1>{description}</h1>
         </div>
         <div>
-          <Button className="rounded-full px-4 py-2 cursor-pointer bg-black/50 hover:bg-accent">
+          <Button className="rounded-full px-4 py-2 cursor-pointer bg-black/50 hover:bg-accent text-white">
             <Link href={`/company/${id}`}>もっと見る</Link>
           </Button>
         </div>
