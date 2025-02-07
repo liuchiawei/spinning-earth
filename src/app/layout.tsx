@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto, Noto_Sans_JP } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -26,10 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body
-        className={`${roboto.variable} ${notoSansJP.variable} antialiased`}
-      >
+      <body className={`${roboto.variable} ${notoSansJP.variable} antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
