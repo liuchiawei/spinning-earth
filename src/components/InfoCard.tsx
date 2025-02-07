@@ -55,7 +55,7 @@ export default function InfoCard({
         )}
       >
         <Button
-          className="absolute top-3 left-3 z-10 text-xl text-gray-100 rounded-full w-8 h-8 cursor-pointer bg-black/50 hover:bg-accent"
+          className="absolute top-3 left-3 z-10 text-xl text-slate-100 rounded-full w-8 h-8 cursor-pointer bg-black/50 hover:bg-accent"
           onClick={handleClose}
         >
           <X />
@@ -76,7 +76,7 @@ export default function InfoCard({
           <h1>{description}</h1>
         </div>
         <div>
-          <Button className="rounded-full px-4 py-2 cursor-pointer bg-black/50 hover:bg-accent text-white">
+          <Button className="rounded-full px-4 py-2 cursor-pointer bg-black/50 hover:bg-accent text-slate-100">
             <Link href={`/company/${id}`}>もっと見る</Link>
           </Button>
         </div>
