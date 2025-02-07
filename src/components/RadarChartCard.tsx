@@ -23,7 +23,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function RadarChartCard({ className, data }: { className?: string, data: number[] }) {
+export default function RadarChartCard({
+  className,
+  data,
+}: {
+  className?: string;
+  data: number[];
+}) {
   const chartData: { name: string; value: number }[] = [
     { name: "技術革新", value: data[0] },
     { name: "影響力", value: data[1] },
@@ -35,14 +41,13 @@ export default function RadarChartCard({ className, data }: { className?: string
   return (
     <Card className={cn("w-full", className)}>
       <CardHeader className="items-center pb-4">
-
         <CardTitle>総合評価</CardTitle>
         <CardDescription>General Evaluation</CardDescription>
       </CardHeader>
       <CardContent className="p-2">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[320px] w-full"
+          className="mx-auto aspect-square max-h-[240px] md:max-h-[320px] w-full"
         >
           <RadarChart data={chartData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
