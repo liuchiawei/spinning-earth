@@ -17,12 +17,29 @@ interface CompanyPageProps {
   params: Promise<{ id: string }>;
 }
 
+// ISR
+// invalidate the cache when a request comes in, at most once every 60 seconds.
+export const revalidate = 60
+// If a request comes in for a path that hasn't been generated, server-render the page on-demand.
+export const dynamicParams = true // or false, to 404 on unknown paths 
+// prerender only the params from `generateStaticParams` at build time.
+export async function generateStaticParams() {
+  const companies: CompanyProps[] = await fetch(
+    "https://spinning-earth-opal.vercel.app/data/data.json"
+  ).then((res) => res.json());
+  return companies.map((company) => ({
+    id: String(company.id),
+  }));
+}
+
 /**
  * 全ての会社データを取得関数
  * @returns data.json( all companies )
  */
 async function getData() {
-  const res = await fetch("http://localhost:3000/data/data.json");
+  const res = await fetch(
+    "https://spinning-earth-opal.vercel.app/data/data.json"
+  );
 
   if (!res.ok) {
     throw new Error("Failed to fetch data");
