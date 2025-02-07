@@ -73,7 +73,9 @@ export default async function Page({ params }: CompanyPageProps) {
       company.timeline as unknown as TimelineProps[];
 
     const nextCompanyId = (companyId % 10) + 1;
+    const nextCompanyName = (companies.find((item) => item.id === nextCompanyId)?.name);
     const prevCompanyId = ((companyId + 8) % 10) + 1;
+    const prevCompanyName = companies.find((item) => item.id === prevCompanyId)?.name;
 
     return (
       <ThemeProvider
@@ -127,10 +129,13 @@ export default async function Page({ params }: CompanyPageProps) {
         </div>
         <NextPageBtn
           nextCompanyId={nextCompanyId}
+          nextCompanyName={nextCompanyName}
           prevCompanyId={prevCompanyId}
+          prevCompanyName={prevCompanyName}
         />
         <BackToTop />
         <Footer name="HAL東京 リュウチャーウェイ" />
+
       </ThemeProvider>
     );
   }
