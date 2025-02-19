@@ -1,4 +1,10 @@
 import Main from "@/app/Main";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function App() {
   return (
@@ -11,11 +17,40 @@ export default function App() {
           未来を創る、今ここに。
         </h2>
       </div>
-      <div className="absolute bottom-8 left-8 z-10 text-sm md:text-xl *:text-sm text-gray-100 p-6 rounded-xl bg-slate-500/20">
+      <div className="absolute bottom-1/6 md:bottom-8 left-8 z-10 text-sm md:text-xl *:text-sm text-gray-100 p-6 rounded-xl bg-slate-500/20">
         <h3>ドラッグして画面を回転</h3>
         <h3>スクロールして画面を拡大</h3>
+      </div>
+      <div className="absolute bottom-8 right-8 z-10 text-sm text-gray-100/70 text-center flex gap-2 items-end">
+        by{}
+        <SiteLink />
       </div>
       <Main />
     </div>
   );
 }
+
+const SiteLink = () => {
+  return (
+    <div className="flex flex-col transition-all">
+      <h4 className="opacity-50">リュウ チャーウェイ</h4>
+      <TooltipProvider>
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <a
+              href="https://liuchiawei.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-2xl hover:text-white "
+            >
+              Liu Chiawei
+            </a>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>ポートフォリオサイト</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
+  );
+};
