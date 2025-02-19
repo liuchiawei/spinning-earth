@@ -41,7 +41,7 @@ const SiteLink = () => {
               href="https://liuchiawei.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-bold text-2xl hover:text-white "
+              className="font-bold text-2xl hover:text-white border-b border-white/30 hover:border-white"
             >
               Liu Chiawei
             </a>
