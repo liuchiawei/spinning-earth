@@ -6,6 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import KatakanaTitle from "@/components/KatakanaTitle";
+import { RandomizedTextEffect } from "@/components/KatakanaTitleNew";
 
 export default function App() {
   return (
@@ -14,10 +15,9 @@ export default function App() {
         <h1 className="text-3xl md:text-6xl font-bold text-white">
           世界を揺るがす企業
         </h1>
-        <KatakanaTitle
+        <RandomizedTextEffect
           text="未来を創る、今ここに。"
           className="text-md md:text-xl text-gray-100/50"
-          delay={0.5}
         />
       </div>
       <div className="absolute bottom-1/6 md:bottom-8 left-8 z-10 text-sm md:text-xl *:text-sm text-gray-100 p-6 rounded-xl bg-slate-500/20">
